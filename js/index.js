@@ -13,4 +13,32 @@ const addPost = () => {
     }
 };
 
+const getAllPosts = () => {
+    fetch('http://localhost:3000/api/posts')
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Network res failed" + res.statusText);
+            }
+            //parse json
+            return res.json();
+        })
+        .then(data => {
+            console.log("Parsed JSON: ", data);
+
+            data.forEach(post => {
+                console.log("ID: ", post.id);
+                console.log("First name: ", post.first_name);
+                console.log("Last name: ", post.last_name);
+                console.log("Header: ", post.header);
+                console.log("Text: ", post.text);
+            })
+        })
+        .catch(error => {
+            console.error("Error getting posts: ", error);
+        })
+}
+
+//gets all posts on site load
+document.addEventListener('DOMContentLoaded', getAllPosts);
+
 postButton.addEventListener('click', addPost);
