@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<head>
+    <title>Post</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #15202b;
+        }
+        .post {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 0px 20px 13px;
+            background-color: #192734;
+            border-radius: 10px;
+        }
+        .profile-header {
+            position: relative;
+            background-color: #192734;
+            padding: 10px;
+            margin-bottom: -10px;
+        }
+        .profile-header img {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            border: 5px solid #192734;
+            position: absolute;
+            top: -20px;
+            left: -10px;
+        }
+        .profile-info {
+            margin-left: 80px;
+            padding-top: -10px;
+        }
+        .profile-info h1 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #ffffff;
+        }
+        .profile-info p {
+            color: #8899a6;
+            margin: 5px 0;
+        }
+        .post-content {
+            color: #e1e8ed;
+            margin-bottom: -10px;
+        }
+        .post-timestamp {
+            font-size: 0.8em;
+            color: #8899a6;
+            margin-bottom: -10px;
+        }
+        .add-comment {
+            display: flex;
+            margin-top: 20px;
+        }
+        .add-comment textarea {
+            flex: 1;
+            height: 40px;
+            padding: 10px;
+            background-color: #22303c;
+            color: #e1e8ed;
+            border: none;
+            box-sizing: border-box;
+            border-radius: 5px;
+            margin-right: 10px;
+            resize: vertical;
+        }
+        .add-comment button {
+            padding: 10px 20px;
+            height: 40px;
+            background-color: #1da1f2;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+        .comments-section {
+            margin-top: 10px;
+        }
+        .comment {
+            padding: 10px;
+            background-color: #22303c;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            color: #e1e8ed;
+        }
+        .comment-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .comment-profile img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        .comment-profile-info h1 {
+            margin: 0;
+            font-size: 1em;
+            color: #ffffff;
+        }
+        .comment-profile-info p {
+            color: #8899a6;
+            margin: 0;
+            font-size: 0.9em;
+        }
+        .comment-content {
+            padding-left: 10px;
+        }
+        .comment-content p {
+            color: #e1e8ed;
+            margin: 0;
+        }
+        .comment-timestamp {
+            font-size: 0.8em;
+            color: #8899a6;
+            text-align: left;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="post">
+        <div class="profile-header">
+            <img src="https://divedigital.id/wp-content/uploads/2022/07/2-Blank-PFP-Icon-Instagram.jpg" alt="Profile Picture">
+            <div class="profile-info">
+                <h1>Jane Smith</h1>
+                <p>@janesmith</p>
+            </div>
+        </div>
+        <div class="post-content">
+            <p>Wikipedia is a free content online encyclopedia written and maintained by a community of volunteers, known as Wikipedians, through open collaboration and the use of the wiki-based editing system MediaWiki. Wikipedia is the largest and most-read reference work in history. It is consistently ranked as one of the ten most popular websites in the world, and as of 2024 is ranked the fifth most visited website on the Internet by Semrush, and second by Ahrefs. Founded by Jimmy Wales and Larry Sanger on January 15, 2001, Wikipedia is hosted by the Wikimedia Foundation, an American nonprofit organization that employs a staff of over 700 people.</p>
+        </div>
+        <div class="post-timestamp">April 20, 2024</div>
+
+        <div class="add-comment">
+            <textarea placeholder="Add a comment..."></textarea>
+            <button>Post</button>
+        </div>
+
+        <div class="comments-section">
+            <div class="comment">
+                <div class="comment-profile">
+                    <img src="https://divedigital.id/wp-content/uploads/2022/07/2-Blank-PFP-Icon-Instagram.jpg" alt="Profile Picture">
+                    <div class="comment-profile-info">
+                        <h1>Jan Smither</h1>
+                        <p>@jansmither</p>
+                    </div>
+                </div>
+                <div class="comment-content">
+                    <p>ok</p>
+                    <div class="comment-timestamp">April 21, 2024</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
