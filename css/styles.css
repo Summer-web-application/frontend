@@ -40,3 +40,15 @@ textarea {
     padding: 10px;
     margin-bottom: 10px;
 }
+
+.name-container-item {
+    display: flex;
+    gap: 5px;
+}
+
+.post-comments-button {
+    background-color: #1e3949;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+}
