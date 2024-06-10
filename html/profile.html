@@ -2,99 +2,21 @@
 <head>
     <title>User Profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #15202b;
-            margin: 0;
-        }
-        .banner {
-            height: 200px;
-        }
-        .profile-header {
-            position: relative;
-            background-color: #192734;
-            padding: 10px;
-            margin-bottom: 20px;
-        }
-        .profile-header img {
-            border-radius: 50%;
-            width: 100px;
-            height: 100px;
-            border: 5px solid #192734;
-            position: absolute;
-            top: -20px;
-            left: 20px;
-        }
-        .profile-info {
-            margin-left: 140px;
-            padding-top: 10px;
-        }
-        .profile-info h1 {
-            margin: 0;
-            font-size: 1.5em;
-            color: #ffffff;
-        }
-        .profile-info p {
-            color: #8899a6;
-            margin: 5px 0;
-        }
-        .posts {
-            margin: 20px auto 20px 50px;
-            max-width: 450px;
-            padding-right: 50px;
-        }
-        .post {
-            background-color: #192734;
-            padding: 20px 20px 10px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-        }
-        .post-content {
-            margin-bottom: 10px;
-        }
-        .post p {
-            color: #e1e8ed;
-            margin: 0 0 7px;
-        }
-        .post .post-timestamp {
-            font-size: 0.8em;
-            color: #8899a6;
-            text-align: left;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="../css/profile.css">
 </head>
 <body>
     <div class="banner"></div>
     <div class="profile-header">
-        <img src="https://divedigital.id/wp-content/uploads/2022/07/2-Blank-PFP-Icon-Instagram.jpg" alt="Profile Picture">
+        <img id="profile-picture" alt="Profile Picture">
         <div class="profile-info">
-            <h1>Jane Smith</h1>
-            <p>@janesmith</p>
-            <p>Hi, I'm Jane Smith :)</p>
+            <h1 id="user-name"></h1>
+            <p id="user-handle"></p>
+            <p id="user-bio"></p>
         </div>
     </div>
 
-    <div class="posts">
-        <div class="post">
-            <div class="post-content">
-                <p>hi.</p>
-            </div>
-            <div class="post-timestamp">May 1, 2024</div>
-        </div>
-        <div class="post">
-            <div class="post-content">
-                <p>⭐</p>
-            </div>
-            <div class="post-timestamp">April 25, 2024</div>
-        </div>
-        <div class="post">
-            <div class="post-content">
-                <p>Wikipedia is a free content online encyclopedia written and maintained by a community of volunteers, known as Wikipedians, through open collaboration and the use of the wiki-based editing system MediaWiki. Wikipedia is the largest and most-read reference work in history. It is consistently ranked as one of the ten most popular websites in the world, and as of 2024 is ranked the fifth most visited website on the Internet by Semrush, and second by Ahrefs. Founded by Jimmy Wales and Larry Sanger on January 15, 2001, Wikipedia is hosted by the Wikimedia Foundation, an American nonprofit organization that employs a staff of over 700 people.</p>
-            </div>
-            <div class="post-timestamp">April 20, 2024</div>
-        </div>
-    </div>
+    <div class="posts" id="user-posts"></div>
+
+    <script src="../js/profile.js"></script>
 </body>
 </html>
-
