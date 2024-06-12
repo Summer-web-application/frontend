@@ -10,3 +10,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     includeHTML(document.getElementById('navbar-container'), 'navbar.html');
 });
+//ejs
