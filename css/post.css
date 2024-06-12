@@ -1,0 +1,118 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #15202b;
+}
+.post {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 0px 20px 13px;
+    background-color: #192734;
+    border-radius: 10px;
+}
+.profile-header {
+    position: relative;
+    background-color: #192734;
+    padding: 10px;
+    margin-bottom: -10px;
+}
+.profile-header img {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    border: 5px solid #192734;
+    position: absolute;
+    top: -20px;
+    left: -10px;
+}
+.profile-info {
+    margin-left: 80px;
+    padding-top: -10px;
+}
+.profile-info h1 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #ffffff;
+}
+.profile-info p {
+    color: #8899a6;
+    margin: 5px 0;
+}
+.post-content {
+    color: #e1e8ed;
+    margin-bottom: -10px;
+}
+.post-timestamp {
+    font-size: 0.8em;
+    color: #8899a6;
+    margin-bottom: -10px;
+}
+.add-comment {
+    display: flex;
+    margin-top: 20px;
+}
+.add-comment textarea {
+    flex: 1;
+    height: 40px;
+    padding: 10px;
+    background-color: #22303c;
+    color: #e1e8ed;
+    border: none;
+    box-sizing: border-box;
+    border-radius: 5px;
+    margin-right: 10px;
+    resize: vertical;
+}
+.add-comment button {
+    padding: 10px 20px;
+    height: 40px;
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-end;
+}
+.comments-section {
+    margin-top: 10px;
+}
+.comment {
+    padding: 10px;
+    background-color: #22303c;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: #e1e8ed;
+}
+.comment-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.comment-profile img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+.comment-profile-info h1 {
+    margin: 0;
+    font-size: 1em;
+    color: #ffffff;
+}
+.comment-profile-info p {
+    color: #8899a6;
+    margin: 0;
+    font-size: 0.9em;
+}
+.comment-content {
+    padding-left: 10px;
+}
+.comment-content p {
+    color: #e1e8ed;
+    margin: 0;
+}
+.comment-timestamp {
+    font-size: 0.8em;
+    color: #8899a6;
+    text-align: left;
+    margin-top: 5px;
+}
