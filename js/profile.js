@@ -65,7 +65,6 @@ fetch('URL')
     })
     .catch(error => console.error('Error can't get user posts:', error));
 */
-
 document.getElementById('profile-picture').src = userProfileData.profilePicture;
 document.getElementById('user-name').innerText = userProfileData.name;
 document.getElementById('user-handle').innerText = '@' + userProfileData.handle;

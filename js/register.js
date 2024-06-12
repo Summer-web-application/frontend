@@ -1,4 +1,6 @@
-import { BACKEND_URL } from "../js/config.js";
+import {User} from "./Classes/User.js";
+
+const user = new User();
 const firstName_input = document.getElementById('firstName');
 const lastName_input = document.getElementById('lastName');
 const userName_input = document.getElementById('userName');
@@ -22,39 +24,11 @@ registerButton.addEventListener('click', async (e) => {
        return;
     }
     try {
-        const result = await registerUser(firstName,lastName,userName,email,password);
+        const result = await user.register(firstName,lastName,userName,email,password);
         console.log("responce received: ", result);
+        window.location.href = "login.html";
     } catch (error){
         console.error("register error", error);
     }
 })
 
-async function registerUser(firstName, lastName, userName, email, password) {
-    
-    const data = JSON.stringify({first_name: firstName, last_name:lastName, username:userName, email:email, password:password});
-
-    try {
-        const res = await fetch(BACKEND_URL + '/register',{
-            method: 'POST',
-            headers:{
-                'Content-Type': 'application/json'
-            },
-            body: data
-        });
-
-        const contentType = res.headers.get('content-type'); 
-        if(!res.ok) {
-            throw new Error('res failed');
-        }
-        if (contentType && contentType.includes('application/json')) {
-            const resultJson = await res.json();
-            return resultJson;
-        } else {
-            const resultText = await res.text();
-            return resultText;
-        }
-    } catch (error) {
-        console.error('Error reg:', error);
-        throw error;
-    }
-}
