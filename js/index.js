@@ -1,3 +1,4 @@
+import { BACKEND_URL } from "../js/config.js";
 const list = document.getElementById('blog-posts'); // container
 const input = document.getElementById('post-textarea');
 const postButton = document.getElementById('post-button');
@@ -15,7 +16,7 @@ const addPost = () => {
 
         const data = { header, text, likes, user_id };
 
-        fetch('http://localhost:3000/api/user/posts', {
+        fetch(BACKEND_URL + '/user/posts', {
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json',
@@ -40,15 +41,11 @@ const addPost = () => {
         .catch(error => {
             console.error('Error: ', error);
         })
-        //old local add post
-        // div.innerHTML = task;
-        // list.insertBefore(div, list.firstChild);
-        // input.value = '';
     }
 };
 
 const getAllPosts = () => {
-    fetch('http://localhost:3000/api/posts')
+    fetch(BACKEND_URL + '/posts')
         .then(res => {
             if (!res.ok) {
                 throw new Error("res failed" + res.statusText);
@@ -90,12 +87,6 @@ const getAllPosts = () => {
                 //add name container to main container
                 div.appendChild(nameContainer);
 
-                //---header maybe not needed---
-                //post header element 
-                // const headerElement = document.createElement('p');
-                // headerElement.textContent = post.header;
-                // div.appendChild(headerElement);
-
                 //main text element
                 const textElement = document.createElement('p');
                 textElement.textContent = post.text;
@@ -121,7 +112,7 @@ const getAllPosts = () => {
 }
 
 const fetchComments = (postId) => {
-    fetch(`http://localhost:3000/api/posts/${postId}/comments`)
+    fetch(BACKEND_URL + `/posts/${postId}/comments`)
     .then(res => {
         if (!res.ok) {
             throw new Error("res failed: " + res.statusText);
@@ -137,7 +128,11 @@ const fetchComments = (postId) => {
     });
 }
 
-//gets all posts on site load
-document.addEventListener('DOMContentLoaded', getAllPosts);
+//gets all posts on site load only when on home
+document.addEventListener('DOMContentLoaded', function() {
+    if(list){
+        getAllPosts();
+    }
+});
 
 postButton.addEventListener('click', addPost);
