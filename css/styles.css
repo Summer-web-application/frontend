@@ -1,36 +1,45 @@
 body {
     background-color: #e6ecf0;
 }
+
 .navbar {
     background-color: #1e3949;
 }
+
 .navbar-brand, .navbar-nav .nav-link {
     color: #fff;
 }
+
 .main-content {
     display: flex;
     justify-content: center;
     margin-top: 20px;
 }
+
 .post-container, .blog-posts-container {
     width: 100%;
     max-width: 600px;
 }
+
 .blog-box {
     background-color: #fff;
     border-radius: 10px;
     padding: 20px;
     margin-bottom: 20px;
 }
+
 textarea {
     resize: none;
 }
-.btn {
+
+.btn-primary{
     background-color: #1e3949;
     border: none;
+    outline: none;
 }
-.btn-primary:hover {
-    background-color: #16333f;
+
+.btn-primary:hover,  .btn-primary:active {
+    background-color: #16333f !important;
 }
 
 .blog-posts-container-item {
@@ -39,6 +48,8 @@ textarea {
     border-radius: 5px;
     padding: 10px;
     margin-bottom: 10px;
+    white-space: wrap;
+    word-wrap: break-word;
 }
 
 .name-container-item {
@@ -46,12 +57,29 @@ textarea {
     gap: 5px;
 }
 
-.post-comments-button {
-    background-color: #1e3949;
+.reaction-button {
+    background-color: transparent;
+    color: #1e3949;
+    transition: text-shadow 0.3s ease;
     border: none;
-    color: #fff;
-    border-radius: 5px;
+    cursor: pointer;
 }
+
+.reaction-button:hover {
+    background-color: transparent; 
+    text-shadow: 0 0 2px #1e3949; 
+}
+
+#reaction-button-1:hover {
+    text-shadow: 0 0 2px #6e8beb;
+    color: #6e8beb;
+}
+
+#reaction-button-2:hover {
+    text-shadow: 0 0 2px #ff0000;
+    color: #ff0000;
+}
+
 
 .login-container {
     max-width: 400px;
@@ -74,3 +102,4 @@ textarea {
 #caccount {
     background-color: transparent;
 }
+
