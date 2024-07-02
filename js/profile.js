@@ -23,19 +23,7 @@ const userPostsData = [
     }
 ];
 
-/* 
-fetch('URL')
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('profile-picture').src = data.profilePicture;
-        document.getElementById('user-name').innerText = data.name;
-        document.getElementById('user-handle').innerText = '@' + data.handle;
-        document.getElementById('user-bio').innerText = data.bio;
-    })
-    .catch(error => console.error('Error can't get user profile:', error));
-*/
-
-/* 
+/*
 fetch('URL')
     .then(response => response.json())
     .then(posts => {
@@ -61,9 +49,20 @@ fetch('URL')
             postElement.addEventListener('click', function () {
                 window.location.href = `post.html?postId=${index}`;
             });
-        });
+
+            fetch('URL')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('profile-picture').src = data.profilePicture;
+                    document.getElementById('user-name').innerText = data.name;
+                    document.getElementById('user-handle').innerText = '@' + data.handle;
+                    document.getElementById('user-bio').innerText = data.bio;
+                })
     })
-    .catch(error => console.error('Error can't get user posts:', error));
+    .catch(error => console.error('Error cant get user profile:', error));
+
+    })
+    .catch(error => console.error('Error cant get user posts:', error));
 */
 document.getElementById('profile-picture').src = userProfileData.profilePicture;
 document.getElementById('user-name').innerText = userProfileData.name;
