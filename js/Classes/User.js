@@ -1,12 +1,17 @@
 import { BACKEND_URL } from "../config.js";
 
 class User {
+    static instanceCounter = 0;
+
     #user_id = undefined
     #email = undefined
     #token = undefined
     #username = undefined
 
     constructor() {
+        User.instanceCounter++;
+        console.log(`Instance created. Total instances: ${User.instanceCounter}`);
+
         const userFromStorage = sessionStorage.getItem('user');
         if(userFromStorage) {
             const user = JSON.parse(userFromStorage);

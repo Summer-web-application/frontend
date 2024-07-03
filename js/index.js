@@ -1,7 +1,8 @@
 //import { BACKEND_URL } from "../js/config.js";
 const BACKEND_URL = "http://localhost:3000/api"
+import { User } from "./Classes/User.js";
 
-
+const user = new User();
 const list = document.getElementById('blog-posts'); // container
 const input = document.getElementById('post-textarea');
 const postButton = document.getElementById('post-button');
@@ -251,6 +252,7 @@ const fetchComments = (postId) => {
 document.addEventListener('DOMContentLoaded', function() {
     if (list) {
         getAllPosts();
+        console.log(user.user_id + "user class id");
     }
     updateCharCount();
 });
