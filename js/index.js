@@ -94,13 +94,13 @@ imageInput.addEventListener('change', () => {
 // hard coded values before user login is implemented
 const addPost = () => {
     const text = input.value.trim();
-    const header = '';
     const likes = 0;
-    const user_id = 1;
+    const user_id = user.user_id;
     const image = imagePreview.querySelector('img') ? imagePreview.querySelector('img').src : null;
 
     if (text !== '') {
-        const data = { header, text, likes, user_id, image };
+        
+        const data = { text, likes, user_id, image };
 
         fetch(BACKEND_URL + '/user/posts', {
             method: 'POST',
@@ -130,10 +130,6 @@ const addPost = () => {
         .catch(error => {
             console.error('Error: ', error);
         })
-        //old local add post
-        // div.innerHTML = task;
-        // list.insertBefore(div, list.firstChild);
-        // input.value = '';
     }
 };
 
@@ -248,6 +244,13 @@ const fetchComments = (postId) => {
             console.error(`Error getting comments for post ${postId}:`, error);
         });
 };
+function authCheck(){
+    if(user.isLoggedIn){
+        addPost
+    } else {
+        console.log("please log in");
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     if (list) {
@@ -258,4 +261,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 input.addEventListener('input', updateCharCount);
-postButton.addEventListener('click', addPost);
+postButton.addEventListener('click', authCheck);

@@ -1,3 +1,5 @@
+import { User } from "./Classes/User.js";
+
 const userProfileData = {
     profilePicture: "https://divedigital.id/wp-content/uploads/2022/07/2-Blank-PFP-Icon-Instagram.jpg",
     name: "Jane Smith",
@@ -64,8 +66,10 @@ fetch('URL')
     })
     .catch(error => console.error('Error cant get user posts:', error));
 */
+const user = new User();
+
 document.getElementById('profile-picture').src = userProfileData.profilePicture;
-document.getElementById('user-name').innerText = userProfileData.name;
+document.getElementById('user-name').innerText = user.username;
 document.getElementById('user-handle').innerText = '@' + userProfileData.handle;
 document.getElementById('user-bio').innerText = userProfileData.bio;
 
