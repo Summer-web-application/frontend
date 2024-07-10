@@ -249,6 +249,7 @@ function authCheck(){
         addPost
     } else {
         console.log("please log in");
+        window.location.href="loginPrompt.html";
     }
 }
 
