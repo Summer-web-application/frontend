@@ -205,7 +205,8 @@ const getAllPosts = () => {
                 commentButton.id = `reaction-button-1`; //assign post id to buttons class
                 commentButton.classList.add('reaction-button', 'me-2');
                 commentButton.addEventListener('click', () => {
-                    fetchComments(post.id); //get posts comments using the right id
+                    //fetchComments(post.id); //get posts comments using the right id
+                    window.location.href = `post.html?postId=${post.id}`;
                 });
                 buttonContainer.appendChild(commentButton);
 
