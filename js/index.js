@@ -1,7 +1,8 @@
 //import { BACKEND_URL } from "../js/config.js";
 const BACKEND_URL = "http://localhost:3000/api"
+import { User } from "./Classes/User.js";
 
-
+const user = new User();
 const list = document.getElementById('blog-posts'); // container
 const input = document.getElementById('post-textarea');
 const postButton = document.getElementById('post-button');
@@ -93,13 +94,13 @@ imageInput.addEventListener('change', () => {
 // hard coded values before user login is implemented
 const addPost = () => {
     const text = input.value.trim();
-    const header = '';
     const likes = 0;
-    const user_id = 1;
+    const user_id = user.user_id;
     const image = imagePreview.querySelector('img') ? imagePreview.querySelector('img').src : null;
 
     if (text !== '') {
-        const data = { header, text, likes, user_id, image };
+        
+        const data = { text, likes, user_id, image };
 
         fetch(BACKEND_URL + '/user/posts', {
             method: 'POST',
@@ -129,10 +130,6 @@ const addPost = () => {
         .catch(error => {
             console.error('Error: ', error);
         })
-        //old local add post
-        // div.innerHTML = task;
-        // list.insertBefore(div, list.firstChild);
-        // input.value = '';
     }
 };
 
@@ -208,7 +205,8 @@ const getAllPosts = () => {
                 commentButton.id = `reaction-button-1`; //assign post id to buttons class
                 commentButton.classList.add('reaction-button', 'me-2');
                 commentButton.addEventListener('click', () => {
-                    fetchComments(post.id); //get posts comments using the right id
+                    //fetchComments(post.id); //get posts comments using the right id
+                    window.location.href = `post.html?postId=${post.id}`;
                 });
                 buttonContainer.appendChild(commentButton);
 
@@ -247,13 +245,22 @@ const fetchComments = (postId) => {
             console.error(`Error getting comments for post ${postId}:`, error);
         });
 };
+function authCheck(){
+    if(user.isLoggedIn){
+        addPost
+    } else {
+        console.log("please log in");
+        window.location.href="loginPrompt.html";
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     if (list) {
         getAllPosts();
+        console.log(user.user_id + "user class id");
     }
     updateCharCount();
 });
 
 input.addEventListener('input', updateCharCount);
-postButton.addEventListener('click', addPost);
+postButton.addEventListener('click', authCheck);
