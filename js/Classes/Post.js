@@ -1,4 +1,5 @@
 import { BACKEND_URL } from "../config.js";
+import { Comment } from "./Comment.js";
 
 class Post {
 
@@ -43,7 +44,7 @@ class Post {
         try {
             const res = await fetch(BACKEND_URL + `/posts/${postId}`);
             if(!res.ok) {
-                throw new Error("res failed" + res.statusText);
+                throw new Error("response failed" + res.statusText);
             }
             const data = await res.json();
             console.log("Data: ", data);
@@ -53,6 +54,23 @@ class Post {
             this.#post_text = data.text;
             this.#post_createdAt = data.created_at;
             this.#post_likes = data.likes;
+        } catch (error) {
+            console.error("Fetch error: ", error);
+        }
+    }
+    async getComments(postId) {
+        try {
+            const res = await fetch(BACKEND_URL + `/posts/${postId}/comments`)
+            if(!res.ok){
+                throw new Error("response failed" + res.statusText);
+            }
+            const data = await res.json();
+            const comments = [];
+            data.forEach(element => {
+                const comment = new Comment(element.first_name, element.last_name, element.username, element.text, element.likes, element.created_at);
+                comments.push(comment);
+            });
+            return comments;
         } catch (error) {
             console.error("Fetch error: ", error);
         }
