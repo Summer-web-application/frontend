@@ -1,5 +1,6 @@
 import { BACKEND_URL } from "../config.js";
 import { Comment } from "./Comment.js";
+import { User } from "./User.js";
 
 class Post {
 
@@ -67,10 +68,57 @@ class Post {
             const data = await res.json();
             const comments = [];
             data.forEach(element => {
-                const comment = new Comment(element.first_name, element.last_name, element.username, element.text, element.likes, element.created_at);
+                const comment = new Comment(element.id, element.first_name, element.last_name, element.username, element.text, element.likes, element.created_at);
                 comments.push(comment);
             });
             return comments;
+        } catch (error) {
+            console.error("Fetch error: ", error);
+        }
+    }
+
+    async postComment(data) {
+        try {
+            const response = await fetch(BACKEND_URL + '/comment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+
+            if(!response.ok) {
+                throw new Error(response.status, 'Not found or internal server');
+            }
+            const commentData = await response.json();
+            console.log(commentData, ' full data');
+            const comment = new Comment(commentData.id, commentData.first_name, commentData.last_name, commentData.username, commentData.text, commentData.likes, commentData.created_at);
+            console.log("Single comment information received: ", commentData.first_name, " ", commentData.last_name, " ", commentData.username, " ", commentData.text, " ", commentData.likes, " ", commentData.created_at )
+            return comment; 
+        } catch (error) {
+            console.error('Fetch', error);
+        }
+    }
+    async likePost(postId) {
+
+    }
+    async likeComment(comment_id) {
+        const user = new User();
+        console.log(comment_id, user.user_id + " ids that is sent");
+        const user_id = user.user_id
+        try {
+            const response = await fetch(BACKEND_URL + `/comment/likes`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json', 
+                },
+                body: JSON.stringify({comment_id, user_id})
+            });
+            if(!response.ok) {
+                throw new Error(response.status, 'Not found or internal server');
+            }
+            const data = await response.text();
+            console.log(data, " likes returned");
         } catch (error) {
             console.error("Fetch error: ", error);
         }

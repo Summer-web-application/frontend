@@ -90,6 +90,10 @@ body {
     margin-bottom: 10px;
     gap: 10px;
 }
+.comment-body {
+    display: flex;
+    align-items: center;
+}
 .comment-profile img {
     border-radius: 50%;
     width: 40px;
@@ -118,4 +122,15 @@ body {
     color: #8899a6;
     text-align: left;
     margin-top: 5px;
+}
+.reaction-button {
+    background-color: transparent;
+    color: #1e3949;
+    transition: text-shadow 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+#reaction-button-2:hover {
+    text-shadow: 0 0 2px #ff0000;
+    color: #ff0000;
 }

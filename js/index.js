@@ -91,15 +91,14 @@ imageInput.addEventListener('change', () => {
     }
 });
 
-// hard coded values before user login is implemented
 const addPost = () => {
     const text = input.value.trim();
     const likes = 0;
     const user_id = user.user_id;
     const image = imagePreview.querySelector('img') ? imagePreview.querySelector('img').src : null;
-
-    if (text !== '') {
-        
+    console.log("addpost");
+    if (text != '') {
+        console.log("send data");
         const data = { text, likes, user_id, image };
 
         fetch(BACKEND_URL + '/user/posts', {
@@ -175,12 +174,6 @@ const getAllPosts = () => {
                 //add name container to main container
                 div.appendChild(nameContainer);
 
-                //---header maybe not needed---
-                //post header element 
-                // const headerElement = document.createElement('p');
-                // headerElement.textContent = post.header;
-                // div.appendChild(headerElement);
-
                 //main text element
                 const textElement = document.createElement('p');
                 textElement.textContent = post.text;
@@ -205,7 +198,6 @@ const getAllPosts = () => {
                 commentButton.id = `reaction-button-1`; //assign post id to buttons class
                 commentButton.classList.add('reaction-button', 'me-2');
                 commentButton.addEventListener('click', () => {
-                    //fetchComments(post.id); //get posts comments using the right id
                     window.location.href = `post.html?postId=${post.id}`;
                 });
                 buttonContainer.appendChild(commentButton);
@@ -247,7 +239,8 @@ const fetchComments = (postId) => {
 };
 function authCheck(){
     if(user.isLoggedIn){
-        addPost
+        console.log("post triggerred");
+        addPost();
     } else {
         console.log("please log in");
         window.location.href="loginPrompt.html";

@@ -1,4 +1,5 @@
 class Comment {
+#id = undefined;
 #firstName = undefined;
 #lastName = undefined;
 #username = undefined;
@@ -6,7 +7,8 @@ class Comment {
 #likes = undefined;
 #date = undefined;
 
-constructor(firstName, lastName, username, text, likes, date){
+constructor(id, firstName, lastName, username, text, likes, date){
+    this.#id = id;
     this.#firstName = firstName;
     this.#lastName = lastName;
     this.#username = username;
@@ -14,7 +16,10 @@ constructor(firstName, lastName, username, text, likes, date){
     this.#likes = likes;
     this.#date = date;
 
-    console.log("created comment instance with text value: " + this.#text);
+    console.log("created comment instance with id value: " + this.#id);
+}
+get id() {
+    return this.#id;
 }
 
 get name(){
