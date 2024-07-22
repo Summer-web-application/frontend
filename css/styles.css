@@ -57,6 +57,16 @@ textarea {
     gap: 5px;
 }
 
+.username-container-item {
+    color: rgba(200, 200, 200);
+    margin-top: -20px;
+}
+
+
+.username-container-item p {
+    font-size: 0.875rem;
+    margin-bottom: 0;
+}
 .reaction-button {
     background-color: transparent;
     color: #1e3949;

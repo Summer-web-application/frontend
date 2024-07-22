@@ -1,14 +1,14 @@
+import { handleImageSelection, getImageURL, clearImage, displayPostImage } from './imageHandler.js';
+import { User } from './Classes/User.js';
+
 //import { BACKEND_URL } from "../js/config.js";
-const BACKEND_URL = "http://localhost:3000/api"
-import { User } from "./Classes/User.js";
+const BACKEND_URL = "http://localhost:3000/api";
 
 const user = new User();
 const list = document.getElementById('blog-posts'); // container
 const input = document.getElementById('post-textarea');
 const postButton = document.getElementById('post-button');
 const charCount = document.getElementById('char-count');
-const imageInput = document.getElementById('image-input');
-const imagePreview = document.getElementById('image-preview');
 const maxChars = 250;
 
 // update the character count display
@@ -17,92 +17,20 @@ const updateCharCount = () => {
     charCount.textContent = `${remaining} / 250`;
 };
 
-
-const resizeImage = (file, callback) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-
-            let width = img.width;
-            let height = img.height;
-            const maxSize = 300;
-
-            if (width > height) {
-                if (width > maxSize) {
-                    height *= maxSize / width;
-                    width = maxSize;
-                }
-            } else {
-                if (height > maxSize) {
-                    width *= maxSize / height;
-                    height = maxSize;
-                }
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-            ctx.drawImage(img, 0, 0, width, height);
-            callback(canvas.toDataURL('image/png'));
-        };
-        img.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-};
-
-
-const displayImage = (imageDataURL) => {
-    imagePreview.innerHTML = '';
-    const imgContainer = document.createElement('div');
-    imgContainer.classList.add('position-relative', 'd-inline-block');
-
-    const img = document.createElement('img');
-    img.src = imageDataURL;
-    img.style.maxWidth = '300px';
-    img.style.maxHeight = '300px';
-    img.classList.add('img-thumbnail');
-    imgContainer.appendChild(img);
-
-    const closeButton = document.createElement('button');
-    closeButton.innerHTML = 'X';
-    closeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'position-absolute', 'top-0', 'end-0');
-    closeButton.style.transform = 'translate(50%, -50%)';
-    closeButton.addEventListener('click', clearImage);
-    imgContainer.appendChild(closeButton);
-
-    imagePreview.appendChild(imgContainer);
-};
-
-// clear the selected image
-const clearImage = () => {
-    imagePreview.innerHTML = '';
-    imageInput.value = '';
-};
-
 // handle image selection
-imageInput.addEventListener('change', () => {
-    const file = imageInput.files[0];
-    if (file) {
-        resizeImage(file, (resizedImage) => {
-            displayImage(resizedImage);
-        });
-    }
-});
+handleImageSelection();
 
 // hard coded values before user login is implemented
 const addPost = () => {
     const text = input.value.trim();
     const likes = 0;
     const user_id = user.user_id;
-    const image = imagePreview.querySelector('img') ? imagePreview.querySelector('img').src : null;
+    const image = getImageURL()
 
     if (text !== '') {
-        
         const data = { text, likes, user_id, image };
 
-        fetch(BACKEND_URL + '/user/posts', {
+        fetch(`${BACKEND_URL}/user/posts`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -124,12 +52,12 @@ const addPost = () => {
             console.log('success:', data);
             input.value = '';
             updateCharCount();
-            imagePreview.innerHTML = '';
+            clearImage();
             getAllPosts();
         })
         .catch(error => {
             console.error('Error: ', error);
-        })
+        });
     }
 };
 
@@ -159,8 +87,10 @@ const getAllPosts = () => {
                 div.setAttribute('class', 'blog-posts-container-item');
 
                 //container for name
-                const nameContainer = document.createElement('div');
+                const nameContainer = document.createElement('div'); // for firstname and lastname
                 nameContainer.classList.add('name-container-item'); //for css styling
+                const userNameContainer = document.createElement('div'); // for the username
+                userNameContainer.classList.add('username-container-item'); 
 
                 //first name element
                 const firstNameElement = document.createElement('p');
@@ -175,6 +105,13 @@ const getAllPosts = () => {
                 //add name container to main container
                 div.appendChild(nameContainer);
 
+                //username element
+                const userNameElement = document.createElement('p');
+                userNameElement.textContent = "@" + post.last_name;
+                userNameContainer.appendChild(userNameElement);
+
+                div.appendChild(userNameContainer);
+
                 //---header maybe not needed---
                 //post header element 
                 // const headerElement = document.createElement('p');
@@ -186,14 +123,7 @@ const getAllPosts = () => {
                 textElement.textContent = post.text;
                 div.appendChild(textElement);
 
-                // image element (if exists)
-                if (post.image) {
-                    const imageElement = document.createElement('img');
-                    imageElement.src = post.image;
-                    imageElement.style.maxWidth = '300px';
-                    imageElement.style.maxHeight = '300px';
-                    div.appendChild(imageElement);
-                }
+                displayPostImage(post, div);
 
                 // button container
                 const buttonContainer = document.createElement('div');
@@ -245,9 +175,10 @@ const fetchComments = (postId) => {
             console.error(`Error getting comments for post ${postId}:`, error);
         });
 };
+
 function authCheck(){
     if(user.isLoggedIn){
-        addPost
+        addPost();
     } else {
         console.log("please log in");
         window.location.href="loginPrompt.html";
@@ -261,6 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     updateCharCount();
 });
+
 
 input.addEventListener('input', updateCharCount);
 postButton.addEventListener('click', authCheck);
