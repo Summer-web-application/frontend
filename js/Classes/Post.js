@@ -107,7 +107,7 @@ class Post {
         console.log(comment_id, user.user_id + " ids that is sent");
         const user_id = user.user_id
         try {
-            const response = await fetch(BACKEND_URL + `/comment/likes`, {
+            const response = await fetch(BACKEND_URL + `/comment/like`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json', 

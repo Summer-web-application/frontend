@@ -130,6 +130,9 @@ body {
     border: none;
     cursor: pointer;
 }
+.reaction-button.liked {
+    color: red;
+}
 #reaction-button-2:hover {
     text-shadow: 0 0 2px #ff0000;
     color: #ff0000;

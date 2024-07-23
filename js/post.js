@@ -21,6 +21,22 @@ async function getAndAssignDetails(postId) {
         console.log(error)
     }
 }
+async function getUsersLikes() {
+    try {
+        const likedComments = await user.getUserCommentLikes(user.user_id);
+        console.log(likedComments, " users liked comment id:s");
+        likedComments.forEach(commentId => {
+            console.log(commentId , "comment ids");
+            const likeButton = document.querySelector(`#reaction-button-2[data="${commentId}"]`);
+            console.log(likeButton, " can get this?");
+            if(likeButton) {
+                likeButton.classList.add('liked');
+            }
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
 async function likeComment(commentId) {
     try {
         const updateLikes = await post.likeComment(commentId);
@@ -65,10 +81,13 @@ async function getPostComments(postId) {
             likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${comment.likes}`;
             likeButton.id = `reaction-button-2`;
             likeButton.classList.add('reaction-button', 'me-2');
+            likeButton.setAttribute('data', comment.id)
+            console.log("greated button with attribute id of: " , comment.id);
             likeButton.addEventListener('click', () => {
                     likeComment(comment.id);
             });
-            
+            console.log(likeButton.outerHTML, "created like button");
+
             //profile things
             commentProfile.appendChild(profilePicture);
             commentProfile.appendChild(commentName);
@@ -150,6 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (postId != null) {
         getAndAssignDetails(postId);
         getPostComments(postId); 
+        getUsersLikes();
     } else {
         console.log("error not valid postId");
     }

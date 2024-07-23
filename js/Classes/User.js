@@ -124,5 +124,21 @@ class User {
         this.#token = undefined;
         sessionStorage.removeItem('user');
     }
+
+    async getUserCommentLikes(userId) {
+        console.log("fetch user likes with userId: " , userId);
+        try {
+            const response = await fetch(BACKEND_URL + `/user/comments/likes/${userId}`);
+            if(!response.ok){
+                throw new Error("response failed" + response.statusText);
+            }
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } catch (error) {
+            console.error("error: ", error);
+            throw error;
+        }
+    }
 }
 export {User}
