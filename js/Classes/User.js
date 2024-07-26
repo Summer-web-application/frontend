@@ -49,10 +49,10 @@ class User {
 
     //methods
     async login(email, password) {
+        console.log("watahel");
         const data = JSON.stringify({email: email, password:password});
-    
         try {
-            const res = await fetch(BACKEND_URL + '/login', {
+            const res = await fetch(BACKEND_URL + '/user/login', {
                 method: 'POST',
                 headers:{
                     'Content-Type': 'application/json'
@@ -92,7 +92,7 @@ class User {
         const data = JSON.stringify({first_name: firstName, last_name:lastName, username:userName, email:email, password:password});
     
         try {
-            const res = await fetch(BACKEND_URL + '/register',{
+            const res = await fetch(BACKEND_URL + '/user/register',{
                 method: 'POST',
                 headers:{
                     'Content-Type': 'application/json'
@@ -128,12 +128,12 @@ class User {
     async getUserCommentLikes(userId) {
         console.log("fetch user likes with userId: " , userId);
         try {
-            const response = await fetch(BACKEND_URL + `/user/comments/likes/${userId}`);
+            const response = await fetch(BACKEND_URL + `/blog/${userId}/comments/likes`);
             if(!response.ok){
                 throw new Error("response failed" + response.statusText);
             }
             const data = await response.json();
-            console.log(data);
+            console.log("Users liked comments: ", data);
             return data;
         } catch (error) {
             console.error("error: ", error);

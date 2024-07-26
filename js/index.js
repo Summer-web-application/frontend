@@ -1,5 +1,4 @@
-//import { BACKEND_URL } from "../js/config.js";
-const BACKEND_URL = "http://localhost:3000/api"
+import { BACKEND_URL } from "../js/config.js";
 import { User } from "./Classes/User.js";
 
 const user = new User();
@@ -96,12 +95,10 @@ const addPost = () => {
     const likes = 0;
     const user_id = user.user_id;
     const image = imagePreview.querySelector('img') ? imagePreview.querySelector('img').src : null;
-    console.log("addpost");
     if (text != '') {
-        console.log("send data");
         const data = { text, likes, user_id, image };
 
-        fetch(BACKEND_URL + '/user/posts', {
+        fetch(BACKEND_URL + '/blog/new', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -133,7 +130,7 @@ const addPost = () => {
 };
 
 const getAllPosts = () => {
-    fetch('http://localhost:3000/api/posts')
+    fetch(BACKEND_URL + '/blog')
         .then(res => {
             if (!res.ok) {
                 throw new Error("res failed" + res.statusText);

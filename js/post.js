@@ -20,15 +20,17 @@ async function getAndAssignDetails(postId) {
     } catch (error){
         console.log(error)
     }
+    //get comments after post details
+    getPostComments(postId); 
 }
 async function getUsersLikes() {
     try {
         const likedComments = await user.getUserCommentLikes(user.user_id);
         console.log(likedComments, " users liked comment id:s");
-        likedComments.forEach(commentId => {
-            console.log(commentId , "comment ids");
-            const likeButton = document.querySelector(`#reaction-button-2[data="${commentId}"]`);
-            console.log(likeButton, " can get this?");
+        likedComments.forEach(element => {
+            console.log(element.comment_id , "comment ids");
+            const likeButton = document.querySelector(`#reaction-button-2[data="${element.comment_id}"]`);
+            console.log(likeButton, " liked buttons");
             if(likeButton) {
                 likeButton.classList.add('liked');
             }
@@ -37,10 +39,18 @@ async function getUsersLikes() {
         console.log(error);
     }
 }
-async function likeComment(commentId) {
+async function likeDislikeComment(commentId, classList) {
     try {
-        const updateLikes = await post.likeComment(commentId);
+        //pass classlist to check the users comment like state
+        const updateLikes = await post.likeDislikeComment(commentId, classList);
         console.log(updateLikes + " updated like count in post");
+        //update the like count
+        const likeButton = document.querySelector(`#reaction-button-2[data="${commentId}"]`);
+        if(likeButton) {
+            likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${updateLikes}`;
+        } else {
+            console.log("likebutton not found");
+        }
     } catch (error) {
         console.log(error);
     }
@@ -82,9 +92,8 @@ async function getPostComments(postId) {
             likeButton.id = `reaction-button-2`;
             likeButton.classList.add('reaction-button', 'me-2');
             likeButton.setAttribute('data', comment.id)
-            console.log("greated button with attribute id of: " , comment.id);
             likeButton.addEventListener('click', () => {
-                    likeComment(comment.id);
+                    likeDislikeComment(comment.id, likeButton.classList);
             });
             console.log(likeButton.outerHTML, "created like button");
 
@@ -105,12 +114,14 @@ async function getPostComments(postId) {
     } catch(error){
         console.log(error);
     }
+    //get what comments user has liked after the comments are set
+    getUsersLikes();
 }
 
-async function postComment(postId) {
-    const userId = user.user_id;
+async function postComment(post_id) {
+    const user_id = user.user_id;
     const text = addCommentText.value.trim();
-    const data = {text, postId, userId};
+    const data = {text, post_id, user_id};
     const comment = await post.postComment(data);
     if(comment != undefined) {
         addCommentToPage(comment);
@@ -168,8 +179,6 @@ function addCommentToPage(comment) {
 document.addEventListener("DOMContentLoaded", function () {
     if (postId != null) {
         getAndAssignDetails(postId);
-        getPostComments(postId); 
-        getUsersLikes();
     } else {
         console.log("error not valid postId");
     }
