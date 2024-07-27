@@ -10,44 +10,46 @@
     <link rel="stylesheet" type="text/css" href="../css/post.css">
 </head>
 <body>
-     <!-- Navigation Bar -->
-     <div id="navbar-container"></div>
-     <script src="../js/includer.js"></script>
-     
-    <div class="post">
-        <button class="edit-post-btn btn btn-primary">Edit</button>
-        <div class="profile-header">
-            <div class="profile-info">
-                <h1></h1>
-                <p></p>
+    <div style="padding-top: 50px;">
+        <!-- Navigation Bar -->
+        <div id="navbar-container"></div>
+        <script src="../js/includer.js"></script>
+        
+        <div class="post">
+            <button class="edit-post-btn btn btn-primary">Edit</button>
+            <div class="profile-header">
+                <div class="profile-info">
+                    <h1></h1>
+                    <p></p>
+                </div>
             </div>
-        </div>
-        <div class="post-content">
-            <p></p>
-            <textarea class="edit-textarea" style="display: none;"></textarea>
-            <button class="save-edit-btn btn btn-success" style="display: none;">Save</button>
-        </div>
+            <div class="post-content">
+                <p></p>
+                <textarea class="edit-textarea" style="display: none;"></textarea>
+                <button class="save-edit-btn btn btn-success" style="display: none;">Save</button>
+            </div>
 
-        <div class="add-comment">
-            <textarea placeholder="Add a comment..."></textarea>
-            <button>Post</button>
-        </div>
+            <div class="add-comment">
+                <textarea placeholder="Add a comment..."></textarea>
+                <button>Post</button>
+            </div>
 
-        <div class="comments-section">
-            <div class="comment">
-                <div class="id" style="display:none">0</div>
-                <div class="comment-profile">
-                    <div class="comment-profile-info">
-                        <h1></h1>
+            <div class="comments-section">
+                <div class="comment">
+                    <div class="id" style="display:none">0</div>
+                    <div class="comment-profile">
+                        <div class="comment-profile-info">
+                            <h1></h1>
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="comment-content">
                         <p></p>
                     </div>
-                </div>
-                <div class="comment-content">
-                    <p></p>
                 </div>
             </div>
         </div>
     </div>
-    <script src="../js/post.js"></script>
+    <script type="module" src="../js/post.js"></script>
 </body>
 </html>
