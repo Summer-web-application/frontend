@@ -1,192 +1,140 @@
-document.addEventListener("DOMContentLoaded", async function () {
+import { Post } from "./Classes/Post.js";
+
+const post = new Post();
+
+async function getAndAssignDetails(postId) {
+    try {
+        await post.getOnePost(postId);
+        document.querySelector('.profile-header .profile-info h1').innerText = post.post_firstName + ' ' + post.post_lastName;
+        document.querySelector('.profile-header .profile-info p').innerText = '@' + post.post_username;
+        document.querySelector('.post-content p').innerText = post.post_text;
+        document.querySelector('.post-timestamp').innerText = post.post_createdAt;
+
+    } catch (error){
+        console.log(error)
+    }
+}
+async function getPostComments(postId) {
+    try {
+        const comments = await post.getComments(postId);
+        const container = document.querySelector('.comments-section');
+        container.innerHTML = '';
+        comments.forEach(comment => {
+            const commentContainer = document.createElement('div');
+            commentContainer.classList.add('comment');
+
+            const commentProfile = document.createElement('div');
+            commentProfile.classList.add('comment-profile');
+
+            const profilePicture = document.createElement('img');
+            profilePicture.src = "https://divedigital.id/wp-content/uploads/2022/07/2-Blank-PFP-Icon-Instagram.jpg";
+
+            const commentName = document.createElement('p');
+            commentName.textContent = comment.name;
+
+            const commentUsername = document.createElement('p');
+            commentUsername.textContent = " @" + comment.username;
+
+            const commentText = document.createElement('p');
+            commentText.textContent = comment.text;
+
+            const date = document.createElement('p');
+            date.classList.add('comment-timestamp');
+            date.textContent = comment.date;
+            
+            //profile things
+            commentProfile.appendChild(profilePicture);
+            commentProfile.appendChild(commentName);
+            commentProfile.appendChild(commentUsername);
+            commentContainer.appendChild(commentProfile);
+
+            //comment body things
+            commentContainer.appendChild(commentText);
+            commentContainer.appendChild(date);
+
+            container.appendChild(commentContainer);
+        });
+
+    } catch(error){
+        console.log(error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('postId');
     
     if (postId != null) {
-        try {
-            const post = await fetchPost(postId);
-            if (!post) return;
-
-            displayPostContent(post);
-
-            const profile = await fetchUserProfile(post.user_id);
-            if (!profile) return;
-
-            displayUserProfile(profile);
-
-            const comments = await fetchComments(postId);
-            if (!comments) return;
-
-            displayComments(comments);
-        } catch (error) {
-            console.error('Error:', error);
-        }
+        getAndAssignDetails(postId);
+        getPostComments(postId); 
     } else {
-        console.error('postId not found in URL parameters');
+        console.log("error not valid postId");
     }
-
-    const postButton = document.querySelector('.add-comment button');
-    postButton.addEventListener('click', async function () {
-        const textarea = document.querySelector('.add-comment textarea');
-        const commentText = textarea.value.trim();
-        if (commentText === '') return;
-
-        try {
-            const userId = 1; // Replace with actual user ID
-            const success = await postComment(postId, commentText, userId);
-            if (success) {
-                textarea.value = '';
-            } else {
-                console.error('Failed to post comment');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    });
-
-    const editButton = document.querySelector('.edit-post-btn');
-    const saveButton = document.querySelector('.save-edit-btn');
-    const postContentP = document.querySelector('.post-content p');
-    const editTextarea = document.querySelector('.edit-textarea');
-
-    editButton.addEventListener('click', function () {
-        if (editTextarea.style.display === 'none') {
-            editTextarea.value = postContentP.innerText;
-            postContentP.style.display = 'none';
-            editTextarea.style.display = 'block';
-            saveButton.style.display = 'block';
-            editButton.innerText = 'Cancel';
-        } else {
-            postContentP.style.display = 'block';
-            editTextarea.style.display = 'none';
-            saveButton.style.display = 'none';
-            editButton.innerText = 'Edit';
-        }
-    });
-
-    saveButton.addEventListener('click', async function () {
-        const updatedContent = editTextarea.value.trim();
-        if (updatedContent === '') return;
-
-        try {
-            const success = await updatePost(postId, updatedContent);
-            if (success) {
-                postContentP.innerText = updatedContent;
-                postContentP.style.display = 'block';
-                editTextarea.style.display = 'none';
-                saveButton.style.display = 'none';
-                editButton.innerText = 'Edit';
-            } else {
-                console.error('Failed to update post');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    });
 });
+//         fetch('URL')
+//             .then(response => response.json())
+//             .then(userPostsData => {
+//                 const post = userPostsData.find(p => p.id == postId);
+//                 if (post) {
+//                     document.querySelector('.post-content p').innerText = post.content;
+//                     document.querySelector('.post-timestamp').innerText = post.timestamp;
+//                 } else {
+//                     console.error('Post not found');
+//                 }
+//             })
+//             .catch(error => console.error('Error getting posts:', error));
+        
+//         fetch('URL')
+//             .then(response => response.json())
+//             .then(data => {
+//                 document.querySelector('.profile-header img').src = userProfileData.profilePicture;
+//                 document.querySelector('.profile-header .profile-info h1').innerText = userProfileData.name;
+//                 document.querySelector('.profile-header .profile-info p').innerText = '@' + userProfileData.handle;
+//             })
+//             .catch(error => console.error('Error cant get user profile:', error));
+            
 
-async function fetchPost(postId) {
-    const postResponse = await fetch(`http://localhost:3000/api/posts/${postId}`);
-    const userPostsData = await postResponse.json();
-    const post = userPostsData.find(p => p.id == postId);
+//         const post = userPostsData.find(p => p.id == postId);
 
-    if (!post) {
-        console.error('Post not found');
-    }
-    return post;
-}
+//         if (post) {
+//             document.querySelector('.profile-header img').src = userProfileData.profilePicture;
+//             document.querySelector('.profile-header .profile-info h1').innerText = userProfileData.name;
+//             document.querySelector('.profile-header .profile-info p').innerText = '@' + userProfileData.handle;
+            
+//             document.querySelector('.post-content p').innerText = post.content;
+//             document.querySelector('.post-timestamp').innerText = post.timestamp;
+//         } else {
+//             console.error('Post not found');
+//         }
+//     } else {
+//         console.error('Post ID not provided');
+//     }
+//  });
 
-function displayPostContent(post) {
-    document.querySelector('.post-content p').innerText = post.text;
-}
 
-async function fetchUserProfile(userId) {
-    const userResponse = await fetch(`http://localhost:3000/api/user/${userId}`);
-    const profileData = await userResponse.json();
-    const profile = profileData[0];
+    const userProfileData = {
+        profilePicture: "https://divedigital.id/wp-content/uploads/2022/07/2-Blank-PFP-Icon-Instagram.jpg",
+        name: "Jane Smith",
+        handle: "janesmith",
+        bio: "Hi, I'm Jane Smith :)"
+    };
 
-    if (!profile) {
-        console.error('Error: user profile not found');
-    }
-    return profile;
-}
-
-function displayUserProfile(profile) {
-    document.querySelector('.profile-header .profile-info h1').innerText = `${profile.first_name} ${profile.last_name}`;
-    document.querySelector('.profile-header .profile-info p').innerText = `@${profile.username}`;
-}
-
-async function fetchComments(postId) {
-    const commentsResponse = await fetch(`http://localhost:3000/api/posts/${postId}/comments`);
-    const commentsData = await commentsResponse.json();
-    return commentsData;
-}
-
-function displayComments(comments) {
-    const commentsSection = document.querySelector('.comments-section');
-    const commentTemplate = commentsSection.querySelector('.comment');
-    
-    comments.forEach(async comment => {
-        const commentProfile = await fetchCommentProfile(comment.user_id);
-
-        const commentElement = commentTemplate.cloneNode(true);
-        commentElement.style.display = 'block';
-        commentElement.querySelector('.comment-profile-info h1').innerText = `${comment.first_name} ${comment.last_name}`;
-        commentElement.querySelector('.comment-profile-info p').innerText = `@${commentProfile.username}`;
-        commentElement.querySelector('.comment-content p').innerText = comment.text;
-        commentElement.querySelector('.comment .id').innerText = comment.id;
-
-        commentsSection.appendChild(commentElement);
-    });
-
-    commentTemplate.remove();
-}
-
-async function postComment(postId, commentText, userId) {
-    try {
-        const response = await fetch(`http://localhost:3000/api/posts/comments`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ text: commentText, likes: 0, post_id: postId, user_id: userId }),
-        });
-        if (response.status === 201) {
-            return true;
-        } else {
-            const data = await response.json();
-            console.error('Failed to post comment:', data);
-            return false;
+    const userPostsData = [
+        {
+            id: 1,
+            content: "hi.",
+            timestamp: "May 1, 2024"
+        },
+        {
+            id: 2,
+            content: "⭐",
+            timestamp: "April 25, 2024"
+        },
+        {
+            id: 3,
+            content: "Wikipedia is a free content online encyclopedia written and maintained by a community of volunteers, known as Wikipedians, through open collaboration and the use of the wiki-based editing system MediaWiki. Wikipedia is the largest and most-read reference work in history. It is consistently ranked as one of the ten most popular websites in the world, and as of 2024 is ranked the fifth most visited website on the Internet by Semrush, and second by Ahrefs. Founded by Jimmy Wales and Larry Sanger on January 15, 2001, Wikipedia is hosted by the Wikimedia Foundation, an American nonprofit organization that employs a staff of over 700 people.",
+            timestamp: "April 20, 2024"
         }
-    } catch (error) {
-        console.error('Error posting comment:', error);
-        return false;
-    }
-}
+    ];
 
-async function fetchCommentProfile(userId) {
-    const userResponse = await fetch(`http://localhost:3000/api/user/${userId}`);
-    const profileData = await userResponse.json();
-    const profile = profileData[0];
 
-    if (!profile) {
-        console.error('Error: user profile not found');
-    }
-    return profile;
-}
-
-async function updatePost(postId, text) {
-    // const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
-    //     method: 'PUT',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({ text })
-    // });
-
-    // return response.ok;
-
-    // PLACEHOLDER
-    console.log(postId + " updated to " + text);
-    return "success";
-}
