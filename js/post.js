@@ -3,14 +3,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     const postId = urlParams.get('postId');
     
     if (postId != null) {
-        getAndAssignDetails(postId);
-        getPostComments(postId); 
-    } else {
-        console.log("error not valid postId");
-    }
-});
-  
-    if (postId !== null) {
         try {
             const post = await fetchPost(postId);
             if (!post) return;
@@ -40,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (commentText === '') return;
 
         try {
-            const userId = 1; // Replace 
+            const userId = 1; // Replace with actual user ID
             const success = await postComment(postId, commentText, userId);
             if (success) {
                 textarea.value = '';
@@ -180,6 +172,6 @@ async function updatePost(postId, text) {
     // return response.ok;
 
     // PLACEHOLDER
-    console.log(postId + " updated to " + text)
-    return "success"
+    console.log(postId + " updated to " + text);
+    return "success";
 }
