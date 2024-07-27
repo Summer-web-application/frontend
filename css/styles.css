@@ -57,6 +57,16 @@ textarea {
     gap: 5px;
 }
 
+.username-container-item {
+    color: rgba(200, 200, 200);
+    margin-top: -20px;
+}
+
+
+.username-container-item p {
+    font-size: 0.875rem;
+    margin-bottom: 0;
+}
 .reaction-button {
     background-color: transparent;
     color: #1e3949;
@@ -102,4 +112,23 @@ textarea {
 #caccount {
     background-color: transparent;
 }
+.prompt-main{
+    text-align: center;
+    margin-top: 100px;
+}
 
+.prompt-header {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+.prompt-container {
+    display: flex;
+    justify-content: center;
+}
+.prompt-block {
+    display: block;
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    color: #16333f;
+}

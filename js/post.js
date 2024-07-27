@@ -1,7 +1,15 @@
 document.addEventListener("DOMContentLoaded", async function () {
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('postId');
-
+    
+    if (postId != null) {
+        getAndAssignDetails(postId);
+        getPostComments(postId); 
+    } else {
+        console.log("error not valid postId");
+    }
+});
+  
     if (postId !== null) {
         try {
             const post = await fetchPost(postId);

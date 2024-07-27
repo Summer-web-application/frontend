@@ -1,12 +1,17 @@
 import { BACKEND_URL } from "../config.js";
 
 class User {
+    static instanceCounter = 0;
+
     #user_id = undefined
     #email = undefined
     #token = undefined
     #username = undefined
 
     constructor() {
+        User.instanceCounter++;
+        console.log(`Instance created. Total instances: ${User.instanceCounter}`);
+
         const userFromStorage = sessionStorage.getItem('user');
         if(userFromStorage) {
             const user = JSON.parse(userFromStorage);
@@ -32,6 +37,13 @@ class User {
     get token(){
         return this.#token;
     }
+
+    get isLoggedIn(){
+        if(this.#user_id != undefined){
+            return true;
+        }
+        return false;
+    }
     //setters
 
 
@@ -45,9 +57,13 @@ class User {
                 headers:{
                     'Content-Type': 'application/json'
                 },
-                body: data
+                body: data,
+                mode: 'cors', 
+                credentials: 'include',
             });
-    
+            let cookie = res.headers.get('set-cookie');
+            console.log('set-cookie header value', cookie);
+
             const contentType = res.headers.get('content-type'); 
             if(!res.ok) {
                 throw new Error('res failed');

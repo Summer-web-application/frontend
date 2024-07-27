@@ -14,6 +14,7 @@ loginButton.addEventListener('click', async (e) => {
     try {
         const result = await user.login(email,password);
         console.log(result + "this");
+        window.location.href = 'index.html';
     } catch (error) {
         console.log(error);
     }
