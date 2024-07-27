@@ -113,6 +113,7 @@ async function fetchUserProfile(userId) {
 
 function displayUserProfile(profile) {
     document.querySelector('.profile-header .profile-info h1').innerText = `${profile.first_name} ${profile.last_name}`;
+    document.querySelector('.profile-header .profile-info p').innerText = `@${profile.username}`;
 }
 
 async function fetchComments(postId) {
@@ -125,10 +126,13 @@ function displayComments(comments) {
     const commentsSection = document.querySelector('.comments-section');
     const commentTemplate = commentsSection.querySelector('.comment');
     
-    comments.forEach(comment => {
+    comments.forEach(async comment => {
+        const commentProfile = await fetchCommentProfile(comment.user_id);
+
         const commentElement = commentTemplate.cloneNode(true);
         commentElement.style.display = 'block';
         commentElement.querySelector('.comment-profile-info h1').innerText = `${comment.first_name} ${comment.last_name}`;
+        commentElement.querySelector('.comment-profile-info p').innerText = `@${commentProfile.username}`;
         commentElement.querySelector('.comment-content p').innerText = comment.text;
         commentElement.querySelector('.comment .id').innerText = comment.id;
 
@@ -158,6 +162,17 @@ async function postComment(postId, commentText, userId) {
         console.error('Error posting comment:', error);
         return false;
     }
+}
+
+async function fetchCommentProfile(userId) {
+    const userResponse = await fetch(`http://localhost:3000/api/user/${userId}`);
+    const profileData = await userResponse.json();
+    const profile = profileData[0];
+
+    if (!profile) {
+        console.error('Error: user profile not found');
+    }
+    return profile;
 }
 
 async function updatePost(postId, text) {

@@ -1,7 +1,8 @@
 fetch('http://localhost:3000/api/user/1')
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('user-name').innerText = data[0].first_name + " " + data[0].last_name;
+                    document.getElementById('users-name').innerText = data[0].first_name + " " + data[0].last_name;
+                    document.getElementById('username').innerText = "@" + data[0].username;
                 })
                 .catch(error => console.error('Error cant get user profile:', error));
 
