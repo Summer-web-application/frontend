@@ -3,6 +3,7 @@ body {
     background-color: #15202b;
 }
 .post {
+    position: relative;
     max-width: 600px;
     margin: 30px auto;
     padding: 10px 20px 13px;
@@ -13,7 +14,7 @@ body {
     position: relative;
     background-color: #192734;
     padding: 10px;
-    margin-bottom: -10px;
+    margin-bottom: -5px;
 }
 .profile-header img {
     border-radius: 50%;
@@ -25,7 +26,7 @@ body {
     left: -10px;
 }
 .profile-info {
-    margin-left: 80px;
+    margin-left: -10px;
     padding-top: -10px;
 }
 .profile-info h1 {
@@ -41,11 +42,23 @@ body {
     color: #e1e8ed;
     margin-top: 5px;
     margin-bottom: -10px;
+    position: relative;
 }
-.post-timestamp {
-    font-size: 0.8em;
-    color: #8899a6;
-    margin-bottom: -10px;
+.post-content p {
+    margin-bottom: 10px;
+}
+.edit-post-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #1da1f2;
+    color: #ffffff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    z-index: 10
 }
 .add-comment {
     display: flex;
@@ -87,8 +100,7 @@ body {
 .comment-profile {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
-    gap: 10px;
+    margin-left: 10px;
 }
 .comment-profile img {
     border-radius: 50%;
@@ -97,7 +109,6 @@ body {
     margin-right: 10px;
 }
 .comment-profile-info h1 {
-    margin: 0;
     font-size: 1em;
     color: #ffffff;
     margin: 0;
