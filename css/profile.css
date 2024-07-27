@@ -2,12 +2,16 @@ html, body {
     height: 100%;
     margin: 0;
 }
-
+.navbar {
+    background-color: #1e3949;
+}
+.navbar-brand, .navbar-nav .nav-link {
+    color: #fff;
+}
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
 }
-
 .profile-header {
     position: relative;
     background-color: #ffffff;
@@ -15,30 +19,25 @@ body {
     margin-bottom: 20px;
     border-bottom: 1px solid #e0e0e0;
 }
-
 .profile-info {
     margin-left: 50px;
     padding-top: 10px;
     padding-bottom: 10px;
 }
-
 .profile-info h1 {
     margin: 0;
     font-size: 1.5em;
     color: #333333;
 }
-
 .profile-info p {
     color: #666666;
     margin: 5px 0;
 }
-
 .posts {
     margin: 20px auto 20px 50px;
     max-width: 450px;
     padding-right: 50px;
 }
-
 .post {
     background-color: #ffffff;
     padding: 20px 20px 10px;
@@ -47,11 +46,9 @@ body {
     border: 1px solid #e0e0e0;
     cursor: pointer;
 }
-
 .post-content {
     margin-bottom: 10px;
 }
-
 .post p {
     color: #333333;
     margin: 0 0 7px;
