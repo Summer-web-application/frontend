@@ -13,10 +13,12 @@ fetch('http://localhost:3000/api/user/posts/1')
         const postTemplate = postsContainer.querySelector('.post');
 
         posts.forEach(post => {
-            const postElement = postTemplate.cloneNode(true);
-            postElement.classList.remove('template');
-            postElement.querySelector('.post-text').innerText = post.text;
+            // TEMPORARY DATA NEED TO SWITCH TO USING THE DATABASE LATER
+            post.time = "May 1, 2024";
 
+            const postElement = postTemplate.cloneNode(true);
+            postElement.querySelector('.post-text').innerText = post.text;
+            postElement.querySelector('.post-timestamp').innerText = post.time;
             postElement.addEventListener('click', function () {
                 window.location.href = `post.html?postId=${post.id}`;
             });

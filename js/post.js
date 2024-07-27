@@ -1,4 +1,66 @@
-document.addEventListener("DOMContentLoaded", async function () {
+import { Post } from "./Classes/Post.js";
+
+const post = new Post();
+
+async function getAndAssignDetails(postId) {
+    try {
+        await post.getOnePost(postId);
+        document.querySelector('.profile-header .profile-info h1').innerText = post.post_firstName + ' ' + post.post_lastName;
+        document.querySelector('.profile-header .profile-info p').innerText = '@' + post.post_username;
+        document.querySelector('.post-content p').innerText = post.post_text;
+        document.querySelector('.post-timestamp').innerText = post.post_createdAt;
+
+    } catch (error){
+        console.log(error)
+    }
+}
+async function getPostComments(postId) {
+    try {
+        const comments = await post.getComments(postId);
+        const container = document.querySelector('.comments-section');
+        container.innerHTML = '';
+        comments.forEach(comment => {
+            const commentContainer = document.createElement('div');
+            commentContainer.classList.add('comment');
+
+            const commentProfile = document.createElement('div');
+            commentProfile.classList.add('comment-profile');
+
+            const profilePicture = document.createElement('img');
+            profilePicture.src = "https://divedigital.id/wp-content/uploads/2022/07/2-Blank-PFP-Icon-Instagram.jpg";
+
+            const commentName = document.createElement('p');
+            commentName.textContent = comment.name;
+
+            const commentUsername = document.createElement('p');
+            commentUsername.textContent = " @" + comment.username;
+
+            const commentText = document.createElement('p');
+            commentText.textContent = comment.text;
+
+            const date = document.createElement('p');
+            date.classList.add('comment-timestamp');
+            date.textContent = comment.date;
+            
+            //profile things
+            commentProfile.appendChild(profilePicture);
+            commentProfile.appendChild(commentName);
+            commentProfile.appendChild(commentUsername);
+            commentContainer.appendChild(commentProfile);
+
+            //comment body things
+            commentContainer.appendChild(commentText);
+            commentContainer.appendChild(date);
+
+            container.appendChild(commentContainer);
+        });
+
+    } catch(error){
+        console.log(error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('postId');
     
