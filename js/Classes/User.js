@@ -50,9 +50,8 @@ class User {
     //methods
     async login(email, password) {
         const data = JSON.stringify({email: email, password:password});
-    
         try {
-            const res = await fetch(BACKEND_URL + '/login', {
+            const res = await fetch(BACKEND_URL + '/user/login', {
                 method: 'POST',
                 headers:{
                     'Content-Type': 'application/json'
@@ -92,7 +91,7 @@ class User {
         const data = JSON.stringify({first_name: firstName, last_name:lastName, username:userName, email:email, password:password});
     
         try {
-            const res = await fetch(BACKEND_URL + '/register',{
+            const res = await fetch(BACKEND_URL + '/user/register',{
                 method: 'POST',
                 headers:{
                     'Content-Type': 'application/json'
@@ -123,6 +122,36 @@ class User {
         this.#email = undefined;
         this.#token = undefined;
         sessionStorage.removeItem('user');
+    }
+    async getUserPostLikes(user_id) {
+        try {
+            const response = await fetch(BACKEND_URL + `/blog/${user_id}/posts/likes`);
+            if(!response.ok){
+                throw new Error("response failed" + response.statusText);
+            }
+            const data = await response.json();
+            console.log("Users liked comments: ", data);
+            return data;
+        } catch (error) {
+            console.error("error: ", error);
+            throw error;
+        }
+    }
+
+    async getUserCommentLikes(user_id, post_id) {
+        console.log("fetch user likes with userId: " , user_id);
+        try {
+            const response = await fetch(BACKEND_URL + `/blog/${user_id}/${post_id}/comments/likes`);
+            if(!response.ok){
+                throw new Error("response failed" + response.statusText);
+            }
+            const data = await response.json();
+            console.log("Users liked comments: ", data);
+            return data;
+        } catch (error) {
+            console.error("error: ", error);
+            throw error;
+        }
     }
 }
 export {User}
