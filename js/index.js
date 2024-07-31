@@ -1,6 +1,7 @@
 import { BACKEND_URL } from "../js/config.js";
 import { User } from "./Classes/User.js";
-
+import { Post } from "./Classes/Post.js";
+const post = new Post();
 const user = new User();
 const list = document.getElementById('blog-posts'); // container
 const input = document.getElementById('post-textarea');
@@ -146,7 +147,6 @@ const getAllPosts = () => {
                 console.log("ID: ", post.id);
                 console.log("First name: ", post.first_name);
                 console.log("Last name: ", post.last_name);
-                console.log("Header: ", post.header);
                 console.log("Text: ", post.text);
                 //add to html
 
@@ -204,8 +204,9 @@ const getAllPosts = () => {
                 likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${post.likes}`;
                 likeButton.id = `reaction-button-2`;
                 likeButton.classList.add('reaction-button', 'me-2');
+                likeButton.setAttribute('data', post.id);
                 likeButton.addEventListener('click', () => {
-                    likePost(post.id);
+                    likeDislikePost(post.id, likeButton.classList);
                 });
                 buttonContainer.appendChild(likeButton);
 
@@ -213,12 +214,48 @@ const getAllPosts = () => {
 
                 list.prepend(div);
             });
+            getUsersLikes();
         })
         .catch(error => {
             console.error("Error getting posts: ", error);
         });
 };
-
+async function getUsersLikes() {
+    try {
+        const likedComments = await user.getUserPostLikes(user.user_id);
+        likedComments.forEach(element => {
+            console.log(element.post_id , "post ids");
+            const likeButton = document.querySelector(`#reaction-button-2[data="${element.post_id}"]`);
+            console.log(likeButton, " liked buttons");
+            if(likeButton) {
+                likeButton.classList.add('liked');
+            }
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+async function likeDislikePost(post_id, classList) {
+    try {
+        //pass classlist to check the users comment like state
+        const updateLikes = await post.likeDislikePost(post_id, classList);
+        //update the like count
+        const likeButton = document.querySelector(`#reaction-button-2[data="${post_id}"]`);
+        if(!likeButton) {
+            console.log("like button of post not found");
+            return;
+        }
+        likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${updateLikes}`;
+        //toggle the buttons classlist
+        if(likeButton.classList.contains("liked")) {
+            likeButton.classList.remove('liked');
+        } else {
+            likeButton.classList.add('liked');
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
 const fetchComments = (postId) => {
     fetch(BACKEND_URL + `/posts/${postId}/comments`)
         .then(res => {

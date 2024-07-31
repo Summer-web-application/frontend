@@ -79,8 +79,9 @@ textarea {
     text-shadow: 0 0 2px #ff0000;
     color: #ff0000;
 }
-
-
+.reaction-button.liked {
+    color: red;
+}
 .login-container {
     max-width: 400px;
     margin: 50px auto;

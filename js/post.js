@@ -25,8 +25,8 @@ async function getAndAssignDetails(postId) {
 }
 async function getUsersLikes() {
     try {
-        const likedComments = await user.getUserCommentLikes(user.user_id);
-        console.log(likedComments, " users liked comment id:s");
+        const likedComments = await user.getUserCommentLikes(user.user_id, postId);
+        console.log(likedComments, "whats in here");
         likedComments.forEach(element => {
             console.log(element.comment_id , "comment ids");
             const likeButton = document.querySelector(`#reaction-button-2[data="${element.comment_id}"]`);
@@ -42,14 +42,21 @@ async function getUsersLikes() {
 async function likeDislikeComment(commentId, classList) {
     try {
         //pass classlist to check the users comment like state
-        const updateLikes = await post.likeDislikeComment(commentId, classList);
+        const updateLikes = await post.likeDislikeComment(commentId, postId, classList);
         console.log(updateLikes + " updated like count in post");
         //update the like count
         const likeButton = document.querySelector(`#reaction-button-2[data="${commentId}"]`);
-        if(likeButton) {
-            likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${updateLikes}`;
-        } else {
+        if(!likeButton) {
             console.log("likebutton not found");
+            return;
+        }
+
+        likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${updateLikes}`;
+        //toggle the buttons classlist
+        if(likeButton.classList.contains("liked")) {
+            likeButton.classList.remove('liked');
+        } else {
+            likeButton.classList.add('liked');
         }
     } catch (error) {
         console.log(error);
@@ -139,6 +146,9 @@ function addCommentToPage(comment) {
             const commentProfile = document.createElement('div');
             commentProfile.classList.add('comment-profile');
 
+            const commentBody = document.createElement('div');
+            commentBody.classList.add('comment-body');
+
             const profilePicture = document.createElement('img');
             profilePicture.src = "https://divedigital.id/wp-content/uploads/2022/07/2-Blank-PFP-Icon-Instagram.jpg";
 
@@ -159,8 +169,9 @@ function addCommentToPage(comment) {
             likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${comment.likes}`;
             likeButton.id = `reaction-button-2`;
             likeButton.classList.add('reaction-button', 'me-2');
+            likeButton.setAttribute('data', comment.id)
             likeButton.addEventListener('click', () => {
-                    likeComment(post.id);
+                    likeDislikeComment(comment.id, likeButton.classList);
             });
             
             //profile things
@@ -170,9 +181,10 @@ function addCommentToPage(comment) {
             commentContainer.appendChild(commentProfile);
 
             //comment body things
-            commentContainer.appendChild(commentText);
+            commentBody.appendChild(commentText);
+            commentBody.appendChild(likeButton);
+            commentContainer.appendChild(commentBody);
             commentContainer.appendChild(date);
-
             container.appendChild(commentContainer);
 }
 

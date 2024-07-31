@@ -59,6 +59,36 @@ class Post {
             console.error("Fetch error: ", error);
         }
     }
+
+    async likeDislikePost(post_id, classList) {
+        const user = new User();
+        const user_id = user.user_id;
+        let like_status;
+        if(classList.contains("liked")){
+            like_status = "dislike";
+            console.log("sending dislike");
+        } else {
+            like_status = "like";
+            console.log("sending like");
+        }
+        try {
+            const response = await fetch(BACKEND_URL + `/blog/post/like`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json', 
+                },
+                body: JSON.stringify({post_id, user_id, like_status})
+            });
+            if(!response.ok) {
+                throw new Error(response.status, 'Not found or internal server');
+            }
+            const data = await response.json();
+            const updatedLikes = data[0].likes;
+            return updatedLikes;
+        } catch (error) {
+            console.error("Fetch error: ", error);
+        }
+    }
     async getComments(postId) {
         try {
             const res = await fetch(BACKEND_URL + `/blog/${postId}/comments`)
@@ -99,10 +129,7 @@ class Post {
             console.error('Fetch', error);
         }
     }
-    async likePost(postId) {
-
-    }
-    async likeDislikeComment(comment_id, classList) {
+    async likeDislikeComment(comment_id, post_id, classList) {
         console.log(classList, " classList of liked comment");
         const user = new User();
         console.log(comment_id, user.user_id + " ids that is sent");
@@ -110,8 +137,10 @@ class Post {
         let like_status;
         if(classList.contains("liked")){
             like_status = "dislike";
+            console.log("sending dislike");
         } else {
             like_status = "like";
+            console.log("sending like");
         }
 
         try {
@@ -120,7 +149,7 @@ class Post {
                 headers: {
                     'Content-Type': 'application/json', 
                 },
-                body: JSON.stringify({comment_id, user_id, like_status})
+                body: JSON.stringify({comment_id, user_id, post_id, like_status})
             });
             if(!response.ok) {
                 throw new Error(response.status, 'Not found or internal server');
