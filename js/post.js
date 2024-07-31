@@ -1,3 +1,4 @@
+
 import { Post } from "./Classes/Post.js";
 import { User } from "./Classes/User.js";
 const user = new User();
@@ -117,13 +118,55 @@ async function getPostComments(postId) {
             commentContainer.appendChild(date);
             container.appendChild(commentContainer);
         });
-
-    } catch(error){
-        console.log(error);
+    } catch(error) {
+      console.log(error);
     }
-    //get what comments user has liked after the comments are set
+      //get what comments user has liked after the comments are set
     getUsersLikes();
 }
+
+    const editButton = document.querySelector('.edit-post-btn');
+    const saveButton = document.querySelector('.save-edit-btn');
+    const postContentP = document.querySelector('.post-content p');
+    const editTextarea = document.querySelector('.edit-textarea');
+
+    editButton.addEventListener('click', function () {
+        if (editTextarea.style.display === 'none') {
+            editTextarea.value = postContentP.innerText;
+            postContentP.style.display = 'none';
+            editTextarea.style.display = 'block';
+            saveButton.style.display = 'block';
+            editButton.innerText = 'Cancel';
+        } else {
+            postContentP.style.display = 'block';
+            editTextarea.style.display = 'none';
+            saveButton.style.display = 'none';
+            editButton.innerText = 'Edit';
+        }
+    });
+
+    saveButton.addEventListener('click', async function () {
+        const updatedContent = editTextarea.value.trim();
+        if (updatedContent === '') return;
+
+        try {
+            const success = await updatePost(postId, updatedContent);
+            if (success) {
+                postContentP.innerText = updatedContent;
+                postContentP.style.display = 'block';
+                editTextarea.style.display = 'none';
+                saveButton.style.display = 'none';
+                editButton.innerText = 'Edit';
+            } else {
+                console.error('Failed to update post');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+});
+
+
 
 async function postComment(post_id) {
     const user_id = user.user_id;
@@ -199,4 +242,29 @@ document.addEventListener("DOMContentLoaded", function () {
 addCommentButton.addEventListener('click', () => postComment(postId));
 
 
+async function fetchCommentProfile(userId) {
+    const userResponse = await fetch(`http://localhost:3000/api/user/${userId}`);
+    const profileData = await userResponse.json();
+    const profile = profileData[0];
 
+    if (!profile) {
+        console.error('Error: user profile not found');
+    }
+    return profile;
+}
+
+async function updatePost(postId, text) {
+    // const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
+    //     method: 'PUT',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({ text })
+    // });
+
+    // return response.ok;
+
+    // PLACEHOLDER
+    console.log(postId + " updated to " + text);
+    return "success";
+}
