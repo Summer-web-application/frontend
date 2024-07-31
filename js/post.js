@@ -125,48 +125,6 @@ async function getPostComments(postId) {
     getUsersLikes();
 }
 
-    const editButton = document.querySelector('.edit-post-btn');
-    const saveButton = document.querySelector('.save-edit-btn');
-    const postContentP = document.querySelector('.post-content p');
-    const editTextarea = document.querySelector('.edit-textarea');
-
-    editButton.addEventListener('click', function () {
-        if (editTextarea.style.display === 'none') {
-            editTextarea.value = postContentP.innerText;
-            postContentP.style.display = 'none';
-            editTextarea.style.display = 'block';
-            saveButton.style.display = 'block';
-            editButton.innerText = 'Cancel';
-        } else {
-            postContentP.style.display = 'block';
-            editTextarea.style.display = 'none';
-            saveButton.style.display = 'none';
-            editButton.innerText = 'Edit';
-        }
-    });
-
-    saveButton.addEventListener('click', async function () {
-        const updatedContent = editTextarea.value.trim();
-        if (updatedContent === '') return;
-
-        try {
-            const success = await updatePost(postId, updatedContent);
-            if (success) {
-                postContentP.innerText = updatedContent;
-                postContentP.style.display = 'block';
-                editTextarea.style.display = 'none';
-                saveButton.style.display = 'none';
-                editButton.innerText = 'Edit';
-            } else {
-                console.error('Failed to update post');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    });
-});
-
-
 
 async function postComment(post_id) {
     const user_id = user.user_id;
@@ -234,6 +192,48 @@ function addCommentToPage(comment) {
 document.addEventListener("DOMContentLoaded", function () {
     if (postId != null) {
         getAndAssignDetails(postId);
+
+            //-----edit section-----//
+    const editButton = document.querySelector('.edit-post-btn');
+    const saveButton = document.querySelector('.save-edit-btn');
+    const postContentP = document.querySelector('.post-content p');
+    const editTextarea = document.querySelector('.edit-textarea');
+
+    editButton.addEventListener('click', function () {
+        if (editTextarea.style.display === 'none') {
+            editTextarea.value = postContentP.innerText;
+            postContentP.style.display = 'none';
+            editTextarea.style.display = 'block';
+            saveButton.style.display = 'block';
+            editButton.innerText = 'Cancel';
+        } else {
+            postContentP.style.display = 'block';
+            editTextarea.style.display = 'none';
+            saveButton.style.display = 'none';
+            editButton.innerText = 'Edit';
+        }
+    });
+
+    saveButton.addEventListener('click', async function () {
+        const updatedContent = editTextarea.value.trim();
+        if (updatedContent === '') return;
+
+        try {
+            const success = await updatePost(postId, updatedContent);
+            if (success) {
+                postContentP.innerText = updatedContent;
+                postContentP.style.display = 'block';
+                editTextarea.style.display = 'none';
+                saveButton.style.display = 'none';
+                editButton.innerText = 'Edit';
+            } else {
+                console.error('Failed to update post');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+//--------edit section end-------//
     } else {
         console.log("error not valid postId");
     }
