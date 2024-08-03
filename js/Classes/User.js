@@ -7,28 +7,32 @@ class User {
     #email = undefined
     #token = undefined
     #username = undefined
+    #first_name = undefined
+    #last_name = undefined
 
     constructor() {
-        User.instanceCounter++;
-        console.log(`Instance created. Total instances: ${User.instanceCounter}`);
-
         const userFromStorage = sessionStorage.getItem('user');
         if(userFromStorage) {
             const user = JSON.parse(userFromStorage);
             this.#user_id = user.id;
             this.#username = user.username;
+            this.#first_name = user.first_name;
+            this.#last_name = user.last_name;
             this.#email = user.email;
             this.#token = user.token;
         }
     }
 
     //getters
-    get user_id(){
+    get id(){
         return this.#user_id;
     }
 
     get username(){
         return this.#username;
+    }
+    get fullName(){
+        return `${this.#first_name} ${this.#last_name}`;
     }
     get email(){
         return this.#email;
@@ -123,35 +127,6 @@ class User {
         this.#token = undefined;
         sessionStorage.removeItem('user');
     }
-    async getUserPostLikes(user_id) {
-        try {
-            const response = await fetch(BACKEND_URL + `/blog/${user_id}/posts/likes`);
-            if(!response.ok){
-                throw new Error("response failed" + response.statusText);
-            }
-            const data = await response.json();
-            console.log("Users liked comments: ", data);
-            return data;
-        } catch (error) {
-            console.error("error: ", error);
-            throw error;
-        }
-    }
-
-    async getUserCommentLikes(user_id, post_id) {
-        console.log("fetch user likes with userId: " , user_id);
-        try {
-            const response = await fetch(BACKEND_URL + `/blog/${user_id}/${post_id}/comments/likes`);
-            if(!response.ok){
-                throw new Error("response failed" + response.statusText);
-            }
-            const data = await response.json();
-            console.log("Users liked comments: ", data);
-            return data;
-        } catch (error) {
-            console.error("error: ", error);
-            throw error;
-        }
-    }
+    
 }
 export {User}

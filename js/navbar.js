@@ -3,7 +3,6 @@ import { User } from "./Classes/User.js";
 const user = new User();
 
 function initializeNavbar() {
-    console.log("navbar js loaded");
     const authButton = document.getElementById('authButton');
 
     if(user.isLoggedIn){

@@ -1,37 +1,102 @@
 
-import { Post } from "./Classes/Post.js";
+import { Fetch } from "./Classes/Fetch.js";
 import { User } from "./Classes/User.js";
-const user = new User();
-const post = new Post();
 
 const urlParams = new URLSearchParams(window.location.search);
 const postId = urlParams.get('postId');
-
+const fetch = new Fetch();
+const user = new User();
 const addCommentButton = document.getElementById('add-comment-button');
 const addCommentText = document.getElementById('add-comment-text');
+const container = document.querySelector('.comments-section');
 
-async function getAndAssignDetails(postId) {
+async function getAndAssignDetails(post_id) {
     try {
-        await post.getOnePost(postId);
-        document.querySelector('.profile-header .profile-info h1').innerText = post.post_firstName + ' ' + post.post_lastName;
-        document.querySelector('.profile-header .profile-info p').innerText = '@' + post.post_username;
-        document.querySelector('.post-content p').innerText = post.post_text;
-        document.querySelector('.post-timestamp').innerText = post.post_createdAt;
-
+        const post = await fetch.getOnePost(post_id);
+        document.querySelector('.profile-header .profile-info h1').innerText = post[0].firstName + ' ' + post[0].lastName;
+        document.querySelector('.profile-header .profile-info p').innerText = '@' + post[0].username;
+        document.querySelector('.post-content p').innerText = post[0].text;
+        document.querySelector('.post-timestamp').innerText = post[0].createdAt;
     } catch (error){
         console.log(error)
     }
-    //get comments after post details
-    getPostComments(postId); 
+}
+async function getPostComments(postId) {
+    try {
+        container.innerHTML = '';
+        const comments = await fetch.getComments(postId);
+        renderComment(comments);
+    } catch(error) {
+      console.log(error);
+    }
+}
+async function postComment(post_id) {
+    const user_id = user.id;
+    const text = addCommentText.value.trim();
+    const data = {text, post_id, user_id};
+    const comment = await fetch.postComment(data);
+    if(comment != undefined) {
+        renderComment(comment);
+        addCommentText.value = '';
+    } else {
+        console.log("Not valid comment");
+    }
+}
+function renderComment(data) {
+    data.forEach(comment => {
+        const commentContainer = document.createElement('div');
+        commentContainer.classList.add('comment');
+
+        const commentProfile = document.createElement('div');
+        commentProfile.classList.add('comment-profile');
+
+        const commentBody = document.createElement('div');
+        commentBody.classList.add('comment-body');
+
+        const profilePicture = document.createElement('img');
+        profilePicture.src = "https://divedigital.id/wp-content/uploads/2022/07/2-Blank-PFP-Icon-Instagram.jpg";
+
+        const commentName = document.createElement('p');
+        commentName.textContent = comment.name;
+
+        const commentUsername = document.createElement('p');
+        commentUsername.textContent = " @" + comment.username;
+
+        const commentText = document.createElement('p');
+        commentText.textContent = comment.text;
+
+        const date = document.createElement('p');
+        date.classList.add('comment-timestamp');
+        date.textContent = comment.date;
+
+        const likeButton = document.createElement('button');
+        likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${comment.likes}`;
+        likeButton.id = `reaction-button-2`;
+        likeButton.classList.add('reaction-button', 'me-2');
+        likeButton.setAttribute('data', comment.id)
+        likeButton.addEventListener('click', () => {
+                likeDislikeComment(comment.id, likeButton.classList);
+        });
+
+        //profile things
+        commentProfile.appendChild(profilePicture);
+        commentProfile.appendChild(commentName);
+        commentProfile.appendChild(commentUsername);
+        commentContainer.appendChild(commentProfile);
+
+        //comment body things
+        commentBody.appendChild(commentText);
+        commentBody.appendChild(likeButton);
+        commentContainer.appendChild(commentBody);
+        commentContainer.appendChild(date);
+        container.appendChild(commentContainer);
+    });
 }
 async function getUsersLikes() {
     try {
-        const likedComments = await user.getUserCommentLikes(user.user_id, postId);
-        console.log(likedComments, "whats in here");
+        const likedComments = await fetch.getUserCommentLikes(user.id, postId);
         likedComments.forEach(element => {
-            console.log(element.comment_id , "comment ids");
             const likeButton = document.querySelector(`#reaction-button-2[data="${element.comment_id}"]`);
-            console.log(likeButton, " liked buttons");
             if(likeButton) {
                 likeButton.classList.add('liked');
             }
@@ -43,15 +108,13 @@ async function getUsersLikes() {
 async function likeDislikeComment(commentId, classList) {
     try {
         //pass classlist to check the users comment like state
-        const updateLikes = await post.likeDislikeComment(commentId, postId, classList);
-        console.log(updateLikes + " updated like count in post");
+        const updateLikes = await fetch.likeDislikeComment(commentId, postId, classList, user.id);
         //update the like count
         const likeButton = document.querySelector(`#reaction-button-2[data="${commentId}"]`);
         if(!likeButton) {
             console.log("likebutton not found");
             return;
         }
-
         likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${updateLikes}`;
         //toggle the buttons classlist
         if(likeButton.classList.contains("liked")) {
@@ -63,177 +126,15 @@ async function likeDislikeComment(commentId, classList) {
         console.log(error);
     }
 }
-
-async function getPostComments(postId) {
-    try {
-        const comments = await post.getComments(postId);
-        const container = document.querySelector('.comments-section');
-        container.innerHTML = '';
-        comments.forEach(comment => {
-            const commentContainer = document.createElement('div');
-            commentContainer.classList.add('comment');
-
-            const commentProfile = document.createElement('div');
-            commentProfile.classList.add('comment-profile');
-
-            const commentBody = document.createElement('div');
-            commentBody.classList.add('comment-body');
-
-            const profilePicture = document.createElement('img');
-            profilePicture.src = "https://divedigital.id/wp-content/uploads/2022/07/2-Blank-PFP-Icon-Instagram.jpg";
-
-            const commentName = document.createElement('p');
-            commentName.textContent = comment.name;
-
-            const commentUsername = document.createElement('p');
-            commentUsername.textContent = " @" + comment.username;
-
-            const commentText = document.createElement('p');
-            commentText.textContent = comment.text;
-
-            const date = document.createElement('p');
-            date.classList.add('comment-timestamp');
-            date.textContent = comment.date;
-
-            const likeButton = document.createElement('button');
-            likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${comment.likes}`;
-            likeButton.id = `reaction-button-2`;
-            likeButton.classList.add('reaction-button', 'me-2');
-            likeButton.setAttribute('data', comment.id)
-            likeButton.addEventListener('click', () => {
-                    likeDislikeComment(comment.id, likeButton.classList);
-            });
-            console.log(likeButton.outerHTML, "created like button");
-
-            //profile things
-            commentProfile.appendChild(profilePicture);
-            commentProfile.appendChild(commentName);
-            commentProfile.appendChild(commentUsername);
-            commentContainer.appendChild(commentProfile);
-
-            //comment body things
-            commentBody.appendChild(commentText);
-            commentBody.appendChild(likeButton);
-            commentContainer.appendChild(commentBody);
-            commentContainer.appendChild(date);
-            container.appendChild(commentContainer);
-        });
-    } catch(error) {
-      console.log(error);
-    }
-      //get what comments user has liked after the comments are set
-    getUsersLikes();
-}
-
-    const editButton = document.querySelector('.edit-post-btn');
-    const saveButton = document.querySelector('.save-edit-btn');
-    const postContentP = document.querySelector('.post-content p');
-    const editTextarea = document.querySelector('.edit-textarea');
-
-    editButton.addEventListener('click', function () {
-        if (editTextarea.style.display === 'none') {
-            editTextarea.value = postContentP.innerText;
-            postContentP.style.display = 'none';
-            editTextarea.style.display = 'block';
-            saveButton.style.display = 'block';
-            editButton.innerText = 'Cancel';
-        } else {
-            postContentP.style.display = 'block';
-            editTextarea.style.display = 'none';
-            saveButton.style.display = 'none';
-            editButton.innerText = 'Edit';
-        }
-    });
-
-    saveButton.addEventListener('click', async function () {
-        const updatedContent = editTextarea.value.trim();
-        if (updatedContent === '') return;
-
-        try {
-            const success = await updatePost(postId, updatedContent);
-            if (success) {
-                postContentP.innerText = updatedContent;
-                postContentP.style.display = 'block';
-                editTextarea.style.display = 'none';
-                saveButton.style.display = 'none';
-                editButton.innerText = 'Edit';
-            } else {
-                console.error('Failed to update post');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    });
-});
-
-
-
-async function postComment(post_id) {
-    const user_id = user.user_id;
-    const text = addCommentText.value.trim();
-    const data = {text, post_id, user_id};
-    const comment = await post.postComment(data);
-    if(comment != undefined) {
-        addCommentToPage(comment);
-        addCommentText.value = '';
-    } else {
-        console.log("Not valid comment");
-    }
-}
-function addCommentToPage(comment) {
-    const container = document.querySelector('.comments-section');
-
-    const commentContainer = document.createElement('div');
-            commentContainer.classList.add('comment');
-
-            const commentProfile = document.createElement('div');
-            commentProfile.classList.add('comment-profile');
-
-            const commentBody = document.createElement('div');
-            commentBody.classList.add('comment-body');
-
-            const profilePicture = document.createElement('img');
-            profilePicture.src = "https://divedigital.id/wp-content/uploads/2022/07/2-Blank-PFP-Icon-Instagram.jpg";
-
-            const commentName = document.createElement('p');
-            commentName.textContent = comment.name;
-
-            const commentUsername = document.createElement('p');
-            commentUsername.textContent = " @" + comment.username;
-
-            const commentText = document.createElement('p');
-            commentText.textContent = comment.text;
-
-            const date = document.createElement('p');
-            date.classList.add('comment-timestamp');
-            date.textContent = comment.date;
-
-            const likeButton = document.createElement('button');
-            likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${comment.likes}`;
-            likeButton.id = `reaction-button-2`;
-            likeButton.classList.add('reaction-button', 'me-2');
-            likeButton.setAttribute('data', comment.id)
-            likeButton.addEventListener('click', () => {
-                    likeDislikeComment(comment.id, likeButton.classList);
-            });
-            
-            //profile things
-            commentProfile.appendChild(profilePicture);
-            commentProfile.appendChild(commentName);
-            commentProfile.appendChild(commentUsername);
-            commentContainer.appendChild(commentProfile);
-
-            //comment body things
-            commentBody.appendChild(commentText);
-            commentBody.appendChild(likeButton);
-            commentContainer.appendChild(commentBody);
-            commentContainer.appendChild(date);
-            container.appendChild(commentContainer);
-}
-
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     if (postId != null) {
-        getAndAssignDetails(postId);
+        try {
+            await getAndAssignDetails(postId);
+            await getPostComments(postId);
+            await getUsersLikes();
+        } catch (error) {
+            console.error('Error loading post details or comments:', error);
+        }
     } else {
         console.log("error not valid postId");
     }
@@ -241,17 +142,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
 addCommentButton.addEventListener('click', () => postComment(postId));
 
+            //-----edit section-----//
+            const editButton = document.querySelector('.edit-post-btn');
+            const saveButton = document.querySelector('.save-edit-btn');
+            const postContentP = document.querySelector('.post-content p');
+            const editTextarea = document.querySelector('.edit-textarea');
+        
+            editButton.addEventListener('click', function () {
+                if (editTextarea.style.display === 'none') {
+                    editTextarea.value = postContentP.innerText;
+                    postContentP.style.display = 'none';
+                    editTextarea.style.display = 'block';
+                    saveButton.style.display = 'block';
+                    editButton.innerText = 'Cancel';
+                } else {
+                    postContentP.style.display = 'block';
+                    editTextarea.style.display = 'none';
+                    saveButton.style.display = 'none';
+                    editButton.innerText = 'Edit';
+                }
+            });
+        
+            saveButton.addEventListener('click', async function () {
+                const updatedContent = editTextarea.value.trim();
+                if (updatedContent === '') return;
+        
+                try {
+                    const success = await updatePost(postId, updatedContent);
+                    if (success) {
+                        postContentP.innerText = updatedContent;
+                        postContentP.style.display = 'block';
+                        editTextarea.style.display = 'none';
+                        saveButton.style.display = 'none';
+                        editButton.innerText = 'Edit';
+                    } else {
+                        console.error('Failed to update post');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        //--------edit section end-------//
 
-async function fetchCommentProfile(userId) {
-    const userResponse = await fetch(`http://localhost:3000/api/user/${userId}`);
-    const profileData = await userResponse.json();
-    const profile = profileData[0];
-
-    if (!profile) {
-        console.error('Error: user profile not found');
-    }
-    return profile;
-}
 
 async function updatePost(postId, text) {
     // const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
