@@ -77,20 +77,72 @@ function renderComment(data) {
         likeButton.addEventListener('click', () => {
                 likeDislikeComment(comment.id, likeButton.classList);
         });
+        const editCommentButton = document.createElement('button');
+        editCommentButton.classList.add('edit-comment-btn');
+        editCommentButton.innerText = 'Edit';
 
-        //profile things
+        const saveCommentButton = document.createElement('button');
+        saveCommentButton.classList.add('save-comment-btn');
+        saveCommentButton.style.display = 'none';
+        saveCommentButton.innerText = 'Save';
+
+        const editCommentTextarea = document.createElement('textarea');
+        editCommentTextarea.classList.add('edit-comment-textarea');
+        editCommentTextarea.style.display = 'none';
+
+        editCommentButton.addEventListener('click', function () {
+            if (editCommentTextarea.style.display === 'none') {
+                editCommentTextarea.value = commentText.innerText;
+                commentText.style.display = 'none';
+                editCommentTextarea.style.display = 'block';
+                saveCommentButton.style.display = 'block';
+                editCommentButton.innerText = 'Cancel';
+            } else {
+                commentText.style.display = 'block';
+                editCommentTextarea.style.display = 'none';
+                saveCommentButton.style.display = 'none';
+                editCommentButton.innerText = 'Edit';
+            }
+        });
+
+        saveCommentButton.addEventListener('click', async function () {
+            const updatedComment = editCommentTextarea.value.trim();
+            if (updatedComment === '') return;
+
+            try {
+                const success = await updateComment(comment.id, updatedComment);
+                if (success) {
+                    commentText.innerText = updatedComment;
+                    commentText.style.display = 'block';
+                    editCommentTextarea.style.display = 'none';
+                    saveCommentButton.style.display = 'none';
+                    editCommentButton.innerText = 'Edit';
+                } else {
+                    console.error('Failed to update comment');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+         // Profile things
+        commentProfile.appendChild(editCommentButton);
         commentProfile.appendChild(profilePicture);
         commentProfile.appendChild(commentName);
         commentProfile.appendChild(commentUsername);
         commentContainer.appendChild(commentProfile);
 
-        //comment body things
+        // Comment body things
         commentBody.appendChild(commentText);
+        commentBody.appendChild(editCommentTextarea);
+        commentBody.appendChild(saveCommentButton);
+        commentBody.appendChild(editCommentButton);
         commentBody.appendChild(likeButton);
         commentContainer.appendChild(commentBody);
         commentContainer.appendChild(date);
         container.appendChild(commentContainer);
     });
+
 }
 async function getUsersLikes() {
     try {
@@ -111,19 +163,31 @@ async function likeDislikeComment(commentId, classList) {
         const updateLikes = await fetch.likeDislikeComment(commentId, postId, classList, user.id);
         //update the like count
         const likeButton = document.querySelector(`#reaction-button-2[data="${commentId}"]`);
-        if(!likeButton) {
+        if (!likeButton) {
             console.log("likebutton not found");
             return;
         }
         likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${updateLikes}`;
         //toggle the buttons classlist
-        if(likeButton.classList.contains("liked")) {
+        if (likeButton.classList.contains("liked")) {
             likeButton.classList.remove('liked');
         } else {
             likeButton.classList.add('liked');
         }
     } catch (error) {
         console.log(error);
+    }
+}
+async function updateComment(commentId, updatedCommentText) {
+    try {
+        const data = {
+            text: updatedCommentText
+        };
+        console.log(data)
+        return await post.editComment(commentId, postId, data);
+    } catch (error) {
+        console.error('Failed to update comment', error);
+        return false;
     }
 }
 document.addEventListener("DOMContentLoaded", async function () {
@@ -140,7 +204,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 });
 
-addCommentButton.addEventListener('click', () => postComment(postId));
+addCommentButton.addEventListener('click', async () => {
+    postComment(postId);
+});
 
             //-----edit section-----//
             const editButton = document.querySelector('.edit-post-btn');
