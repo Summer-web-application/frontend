@@ -4,19 +4,20 @@ import { User } from "./Classes/User.js";
 const user = new User();
 const post = new Post();
 
-const urlParams = new URLSearchParams(window.location.search);
-const postId = urlParams.get('postId');
-
 const addCommentButton = document.getElementById('add-comment-button');
 const addCommentText = document.getElementById('add-comment-text');
+let postId = null;
 
-async function getAndAssignDetails(postId) {
+
+export async function getAndAssignDetails(pId) {
+    postId = pId;
     try {
         await post.getOnePost(postId);
         document.querySelector('.profile-header .profile-info h1').innerText = post.post_firstName + ' ' + post.post_lastName;
         document.querySelector('.profile-header .profile-info p').innerText = '@' + post.post_username;
         document.querySelector('.post-content p').innerText = post.post_text;
         document.querySelector('.post-timestamp').innerText = post.post_createdAt;
+
 
     } catch (error){
         console.log(error)
