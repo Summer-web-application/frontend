@@ -118,10 +118,22 @@ body {
 }
 .comment-profile {
     margin-left: 10px;
+    margin-bottom: 10px;
 }
 .comment-body {
     display: flex;
     align-items: center;
+}
+.comment-profile p {
+    margin-bottom: 0px;
+}
+.comment-body {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+.comment-timestamp {
+    margin-left: 10px;
 }
 .comment-profile img {
     border-radius: 50%;
