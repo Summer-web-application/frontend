@@ -58,8 +58,7 @@ body {
 .post-content p {
     margin-bottom: 10px;
 }
-
-.edit-post-btn {
+.edit-post-btn  {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -72,7 +71,19 @@ body {
     font-size: 0.9em;
     z-index: 10;
 }
-
+.edit-comment-btn, .save-comment-btn {
+    background-color: #1da1f2;
+    color: #ffffff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin-left: 10px;
+}
+.save-comment-btn {
+    background-color: #28a745;
+}
 .add-comment {
     display: flex;
     margin-top: 20px;
@@ -166,97 +177,3 @@ body {
     color: #ff0000;
 }
 
-/* Modal Styles */
-.modal-content {
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
-}
-
-.modal-header {
-    border-bottom: 1px solid #eee;
-    padding-bottom: 15px;
-}
-
-.modal-header .btn-close {
-    padding: 0.5rem 1rem;
-}
-
-.modal-body {
-    padding: 20px;
-}
-
-.modal-title {
-    font-size: 1.25rem;
-    color: #333;
-}
-
-.modal-body .post {
-    background-color: transparent;
-    padding: 0;
-    border: none;
-}
-
-.modal-body .post-content {
-    margin-top: 10px;
-}
-
-.modal-body .post-content p {
-    font-size: 1rem;
-    margin-bottom: 15px;
-}
-
-.modal-body .edit-post-btn, .modal-body .save-edit-btn {
-    font-size: 0.85rem;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-.modal-body .edit-textarea {
-    width: 100%;
-    height: 100px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-.modal-body .add-comment textarea {
-    height: 60px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-.modal-body .add-comment button {
-    background-color: #1da1f2;
-    color: #fff;
-    border-radius: 5px;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-}
-
-.modal-body .comments-section .comment {
-    background-color: #fafafa;
-    border: 1px solid #eee;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-.modal-body .comments-section .comment p {
-    margin: 5px 0;
-}
-
-.modal-footer {
-    border-top: 1px solid #eee;
-    padding-top: 15px;
-}
-
-.modal-footer .btn {
-    padding: 10px 20px;
-    border-radius: 5px;
-}

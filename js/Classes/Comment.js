@@ -15,8 +15,6 @@ constructor(id, firstName, lastName, username, text, likes, date){
     this.#text = text;
     this.#likes = likes;
     this.#date = date;
-
-    console.log("created comment instance with id value: " + this.#id);
 }
 get id() {
     return this.#id;
