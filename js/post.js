@@ -146,42 +146,6 @@ function renderComment(data) {
             commentBody.appendChild(saveCommentButton);
             commentBody.appendChild(editCommentButton);
         }
-
-
-        // editCommentButton.addEventListener('click', function () {
-        //     if (editCommentTextarea.style.display === 'none') {
-        //         editCommentTextarea.value = commentText.innerText;
-        //         commentText.style.display = 'none';
-        //         editCommentTextarea.style.display = 'block';
-        //         saveCommentButton.style.display = 'block';
-        //         editCommentButton.innerText = 'Cancel';
-        //     } else {
-        //         commentText.style.display = 'block';
-        //         editCommentTextarea.style.display = 'none';
-        //         saveCommentButton.style.display = 'none';
-        //         editCommentButton.innerText = 'Edit';
-        //     }
-        // });
-
-        // saveCommentButton.addEventListener('click', async function () {
-        //     const updatedComment = editCommentTextarea.value.trim();
-        //     if (updatedComment === '') return;
-
-        //     try {
-        //         const success = await updateComment(comment.id, updatedComment);
-        //         if (success) {
-        //             commentText.innerText = updatedComment;
-        //             commentText.style.display = 'block';
-        //             editCommentTextarea.style.display = 'none';
-        //             saveCommentButton.style.display = 'none';
-        //             editCommentButton.innerText = 'Edit';
-        //         } else {
-        //             console.error('Failed to update comment');
-        //         }
-        //     } catch (error) {
-        //         console.error('Error:', error);
-        //     }
-        // });
     });
 
 }
@@ -249,49 +213,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 addCommentButton.addEventListener('click', async () => {
     postComment(postId);
 });
-
-// //-----edit section-----//
-// const editButton = document.querySelector('.edit-post-btn');
-// const saveButton = document.querySelector('.save-edit-btn');
-// const postContentP = document.querySelector('.post-content p');
-// const editTextarea = document.querySelector('.edit-textarea');
-
-// editButton.addEventListener('click', function () {
-//     if (editTextarea.style.display === 'none') {
-//         editTextarea.value = postContentP.innerText;
-//         postContentP.style.display = 'none';
-//         editTextarea.style.display = 'block';
-//         saveButton.style.display = 'block';
-//         editButton.innerText = 'Cancel';
-//     } else {
-//         postContentP.style.display = 'block';
-//         editTextarea.style.display = 'none';
-//         saveButton.style.display = 'none';
-//         editButton.innerText = 'Edit';
-//     }
-// });
-
-// saveButton.addEventListener('click', async function () {
-//     const updatedContent = editTextarea.value.trim();
-//     if (updatedContent === '') return;
-
-//     try {
-//         const success = await fetch.editPost(postId, updatedContent);
-//         if (success) {
-//             postContentP.innerText = updatedContent;
-//             postContentP.style.display = 'block';
-//             editTextarea.style.display = 'none';
-//             saveButton.style.display = 'none';
-//             editButton.innerText = 'Edit';
-//         } else {
-//             console.error('Failed to update post');
-//         }
-//     } catch (error) {
-//         console.error('Error:', error);
-//     }
-// });
-// //--------edit section end-------//
-
 
 async function updatePost() {
     const loggedInUserId = JSON.parse(sessionStorage.getItem('user')).username;
