@@ -11,33 +11,24 @@
 </head>
 <body>
     <div style="padding-top: 50px;">
-
-        Trigger button for modal
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#postModal">
-            Open Post Modal
-        </button>
-
-        <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="postModalLabel">Post</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="post">
-                            <button class="edit-post-btn btn btn-primary">Edit</button>
-                            <div class="profile-header">
-                                <div class="profile-info">
-                                    <h1></h1>
-                                    <p></p>
-                                </div>
-                            </div>
-                            <div class="post-content">
-                                <p></p>
-                                <textarea class="edit-textarea" style="display: none;"></textarea>
-                                <button class="save-edit-btn btn btn-success" style="display: none;">Save</button>
-                            </div>
+        
+        <div id="navbar-container"></div>
+        <script src="../js/includer.js"></script>
+        
+        <div class="post">
+            <button class="edit-post-btn btn btn-primary">Edit</button>
+            <div class="profile-header">
+                <div class="profile-info">
+                    <h1></h1>
+                    <p></p>
+                </div>
+            </div>
+            <div class="post-timestamp"></div>
+            <div class="post-content">
+                <p></p>
+                <textarea class="edit-textarea" style="display: none;"></textarea>
+                <button class="save-edit-btn btn btn-success" style="display: none;">Save</button>
+            </div>
 
                             <div class="add-comment">
                                 <textarea id="add-comment-text" placeholder="Add a comment..."></textarea>
@@ -71,5 +62,4 @@
     <script type="module" src="../js/index.js"></script>
     <script type="module" src="../js/post.js"></script>
 </body>
-</html>
--->
+</html>-->

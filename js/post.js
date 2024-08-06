@@ -1,18 +1,17 @@
 
 import { Fetch } from "./Classes/Fetch.js";
 import { User } from "./Classes/User.js";
-
-const urlParams = new URLSearchParams(window.location.search);
-const postId = urlParams.get('postId');
 const fetch = new Fetch();
 const user = new User();
 const addCommentButton = document.getElementById('add-comment-button');
 const addCommentText = document.getElementById('add-comment-text');
 const container = document.querySelector('.comments-section');
+let postId = null;
 
-async function getAndAssignDetails(post_id) {
+export async function getAndAssignDetails(pId) {
+    postId = pId;
     try {
-        const post = await fetch.getOnePost(post_id);
+        const post = await fetch.getOnePost(postId);
         document.querySelector('.profile-header .profile-info h1').innerText = post[0].firstName + ' ' + post[0].lastName;
         document.querySelector('.profile-header .profile-info p').innerText = '@' + post[0].username;
         document.querySelector('.post-content p').innerText = post[0].text;
@@ -20,8 +19,9 @@ async function getAndAssignDetails(post_id) {
     } catch (error){
         console.log(error)
     }
+    getPostComments(postId); 
 }
-async function getPostComments(postId) {
+async function getPostComments() {
     try {
         container.innerHTML = '';
         const comments = await fetch.getComments(postId);

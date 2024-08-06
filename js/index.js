@@ -3,9 +3,6 @@ import { User } from "./Classes/User.js";
 import { Fetch } from "./Classes/Fetch.js";
 import { handleImageSelection, getImageURL, clearImage, displayPostImage } from './imageHandler.js';
 import { getAndAssignDetails } from './post.js';
-const post = new Post();
-
-
 const fetch = new Fetch();
 const user = new User();
 const list = document.getElementById('blog-posts'); // container
@@ -146,7 +143,8 @@ function renderPost(data) {
             commentButton.id = `reaction-button-1`; //assign post id to buttons class
             commentButton.classList.add('reaction-button', 'me-2');
             commentButton.addEventListener('click', () => {
-                window.location.href = `post.html?postId=${post.id}`;
+                getAndAssignDetails(post.id)
+                postModal.show()
             });
             buttonContainer.appendChild(commentButton);
 
