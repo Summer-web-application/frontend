@@ -10,30 +10,30 @@ class Post {
     #post_text = undefined;
     #post_createdAt = undefined;
     #post_likes = undefined;
-    constructor(){
-        
+    constructor() {
+
     }
 
-    get post_firstName(){
+    get post_firstName() {
         return this.#post_firstName;
     }
-    get post_lastName(){
+    get post_lastName() {
         return this.#post_lastName;
     }
-    get post_username(){
+    get post_username() {
         return this.#post_username;
     }
-    get post_text(){
+    get post_text() {
         return this.#post_text;
     }
-    get post_createdAt(){
+    get post_createdAt() {
         const fullDate = new Date(this.#post_createdAt);
         const day = fullDate.getDate();
         const month = fullDate.getMonth();
         const year = fullDate.getFullYear();
         return `${day}.${month}.${year}`;
     }
-    get post_likes(){
+    get post_likes() {
         return this.#post_likes;
     }
 
@@ -44,7 +44,7 @@ class Post {
     async getOnePost(postId) {
         try {
             const res = await fetch(BACKEND_URL + `/blog/${postId}`);
-            if(!res.ok) {
+            if (!res.ok) {
                 throw new Error("response failed" + res.statusText);
             }
             const data = await res.json();
@@ -64,7 +64,7 @@ class Post {
         const user = new User();
         const user_id = user.user_id;
         let like_status;
-        if(classList.contains("liked")){
+        if (classList.contains("liked")) {
             like_status = "dislike";
             console.log("sending dislike");
         } else {
@@ -75,11 +75,11 @@ class Post {
             const response = await fetch(BACKEND_URL + `/blog/post/like`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json', 
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({post_id, user_id, like_status})
+                body: JSON.stringify({ post_id, user_id, like_status })
             });
-            if(!response.ok) {
+            if (!response.ok) {
                 throw new Error(response.status, 'Not found or internal server');
             }
             const data = await response.json();
@@ -92,7 +92,7 @@ class Post {
     async getComments(postId) {
         try {
             const res = await fetch(BACKEND_URL + `/blog/${postId}/comments`)
-            if(!res.ok){
+            if (!res.ok) {
                 throw new Error("response failed" + res.statusText);
             }
             const data = await res.json();
@@ -118,13 +118,13 @@ class Post {
                 body: JSON.stringify(data)
             });
 
-            if(!response.ok) {
+            if (!response.ok) {
                 throw new Error(response.status, 'Not found or internal server');
             }
             const commentData = await response.json();
             console.log('Received new comment: ', commentData);
             const comment = new Comment(commentData[0].id, commentData[0].first_name, commentData[0].last_name, commentData[0].username, commentData[0].text, commentData[0].likes, commentData[0].created_at);
-            return comment; 
+            return comment;
         } catch (error) {
             console.error('Fetch', error);
         }
@@ -135,7 +135,7 @@ class Post {
         console.log(comment_id, user.user_id + " ids that is sent");
         const user_id = user.user_id
         let like_status;
-        if(classList.contains("liked")){
+        if (classList.contains("liked")) {
             like_status = "dislike";
             console.log("sending dislike");
         } else {
@@ -147,11 +147,11 @@ class Post {
             const response = await fetch(BACKEND_URL + `/blog/comment/like`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json', 
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({comment_id, user_id, post_id, like_status})
+                body: JSON.stringify({ comment_id, user_id, post_id, like_status })
             });
-            if(!response.ok) {
+            if (!response.ok) {
                 throw new Error(response.status, 'Not found or internal server');
             }
             const data = await response.json();
@@ -162,30 +162,43 @@ class Post {
         }
     }
 
+    async editPost(postId, text) {
+        console.log(postId + " " + text)
+        const response = await fetch(`http://localhost:3000/blog/${postId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text })
+        });
+
+        console.log(response);
+
+        return response.ok;
+    }
+
     async editComment(commentId, postId, updatedData) {
-        console.log(commentId + " " + postId + " " +  JSON.stringify(updatedData))
-        // try {
-        //     const response = await fetch(`${BACKEND_URL}/blog/comment/${commentId}`, {
-        //         method: 'PUT',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify(updatedData)
-        //     });
+        try {
+            const response = await fetch(`${BACKEND_URL}/blog/comment/${commentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData)
+            });
 
-        //     if (!response.ok) {
-        //         throw new Error(`Error updating comment: ${response.statusText}`);
-        //     }
+            if (!response.ok) {
+                throw new Error(`Error updating comment: ${response.statusText}`);
+            }
 
-        //     const data = await response.json();
-        //     return data.success;  // Assuming the API returns { success: true } on success
-        // } catch (error) {
-        //     console.error('Failed to update comment:', error);
-        //     return false;
-        // }
+            return response.ok;
+        } catch (error) {
+            console.error('Failed to update comment:', error);
+            return false;
+        }
     }
 
 }
-            
 
-export {Post}
+
+export { Post }

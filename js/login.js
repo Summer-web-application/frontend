@@ -10,6 +10,7 @@ loginButton.addEventListener('click', async (e) => {
 
     const email = email_input.value;
     const password = password_input.value;
+    console.log(email + " " + password)
 
     try {
         const result = await user.login(email,password);

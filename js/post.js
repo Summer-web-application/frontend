@@ -69,6 +69,7 @@ async function getPostComments(postId) {
         const comments = await post.getComments(postId);
         const container = document.querySelector('.comments-section');
         container.innerHTML = '';
+
         comments.forEach(comment => {
             const commentContainer = document.createElement('div');
             commentContainer.classList.add('comment');
@@ -99,11 +100,10 @@ async function getPostComments(postId) {
             likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${comment.likes}`;
             likeButton.id = `reaction-button-2`;
             likeButton.classList.add('reaction-button', 'me-2');
-            likeButton.setAttribute('data', comment.id)
+            likeButton.setAttribute('data', comment.id);
             likeButton.addEventListener('click', () => {
                 likeDislikeComment(comment.id, likeButton.classList);
             });
-            console.log(likeButton.outerHTML, "created like button");
 
             const editCommentButton = document.createElement('button');
             editCommentButton.classList.add('edit-comment-btn');
@@ -118,43 +118,7 @@ async function getPostComments(postId) {
             editCommentTextarea.classList.add('edit-comment-textarea');
             editCommentTextarea.style.display = 'none';
 
-            editCommentButton.addEventListener('click', function () {
-                if (editCommentTextarea.style.display === 'none') {
-                    editCommentTextarea.value = commentText.innerText;
-                    commentText.style.display = 'none';
-                    editCommentTextarea.style.display = 'block';
-                    saveCommentButton.style.display = 'block';
-                    editCommentButton.innerText = 'Cancel';
-                } else {
-                    commentText.style.display = 'block';
-                    editCommentTextarea.style.display = 'none';
-                    saveCommentButton.style.display = 'none';
-                    editCommentButton.innerText = 'Edit';
-                }
-            });
-
-            saveCommentButton.addEventListener('click', async function () {
-                const updatedComment = editCommentTextarea.value.trim();
-                if (updatedComment === '') return;
-
-                try {
-                    const success = await updateComment(comment.id, updatedComment);
-                    if (success) {
-                        commentText.innerText = updatedComment;
-                        commentText.style.display = 'block';
-                        editCommentTextarea.style.display = 'none';
-                        saveCommentButton.style.display = 'none';
-                        editCommentButton.innerText = 'Edit';
-                    } else {
-                        console.error('Failed to update comment');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            });
-
             // Profile things
-            commentProfile.appendChild(editCommentButton);
             commentProfile.appendChild(profilePicture);
             commentProfile.appendChild(commentName);
             commentProfile.appendChild(commentUsername);
@@ -162,21 +126,59 @@ async function getPostComments(postId) {
 
             // Comment body things
             commentBody.appendChild(commentText);
-            commentBody.appendChild(editCommentTextarea);
-            commentBody.appendChild(saveCommentButton);
-            commentBody.appendChild(editCommentButton);
             commentBody.appendChild(likeButton);
             commentContainer.appendChild(commentBody);
             commentContainer.appendChild(date);
             container.appendChild(commentContainer);
+
+            // Check if the logged-in user is the author of the comment
+            if (user.username === comment.username) {
+                editCommentButton.addEventListener('click', function () {
+                    if (editCommentTextarea.style.display === 'none') {
+                        editCommentTextarea.value = commentText.innerText;
+                        commentText.style.display = 'none';
+                        editCommentTextarea.style.display = 'block';
+                        saveCommentButton.style.display = 'block';
+                        editCommentButton.innerText = 'Cancel';
+                    } else {
+                        commentText.style.display = 'block';
+                        editCommentTextarea.style.display = 'none';
+                        saveCommentButton.style.display = 'none';
+                        editCommentButton.innerText = 'Edit';
+                    }
+                });
+
+                saveCommentButton.addEventListener('click', async function () {
+                    const updatedComment = editCommentTextarea.value.trim();
+                    if (updatedComment === '') return;
+
+                    try {
+                        const success = await updateComment(comment.id, updatedComment);
+                        if (success) {
+                            commentText.innerText = updatedComment;
+                            commentText.style.display = 'block';
+                            editCommentTextarea.style.display = 'none';
+                            saveCommentButton.style.display = 'none';
+                            editCommentButton.innerText = 'Edit';
+                        } else {
+                            console.error('Failed to update comment');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                });
+
+                // Append the edit button if the user is the author
+                commentBody.appendChild(editCommentTextarea);
+                commentBody.appendChild(saveCommentButton);
+                commentBody.appendChild(editCommentButton);
+            }
         });
     } catch (error) {
         console.log(error);
     }
-    //get what comments user has liked after the comments are set
     getUsersLikes();
 }
-
 
 async function postComment(post_id) {
     const user_id = user.user_id;
@@ -190,6 +192,7 @@ async function postComment(post_id) {
         console.log("Not valid comment");
     }
 }
+
 function addCommentToPage(comment) {
     const container = document.querySelector('.comments-section');
 
@@ -261,6 +264,7 @@ function addCommentToPage(comment) {
 
         try {
             const success = await updateComment(comment.id, updatedComment);
+            console.log(success)
             if (success) {
                 commentText.innerText = updatedComment;
                 commentText.style.display = 'block';
@@ -297,59 +301,67 @@ async function updateComment(commentId, updatedCommentText) {
         const data = {
             text: updatedCommentText
         };
-        console.log(data)
-        return await post.editComment(commentId, postId, data);
+        const result = await post.editComment(commentId, postId, data);
+        return result
     } catch (error) {
         console.error('Failed to update comment', error);
         return false;
     }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     if (postId != null) {
-        getAndAssignDetails(postId);
+        await getAndAssignDetails(postId);
 
-        //-----edit section-----//
+        const loggedInUserId = JSON.parse(sessionStorage.getItem('user')).username;
         const editButton = document.querySelector('.edit-post-btn');
-        const saveButton = document.querySelector('.save-edit-btn');
-        const postContentP = document.querySelector('.post-content p');
-        const editTextarea = document.querySelector('.edit-textarea');
 
-        editButton.addEventListener('click', function () {
-            if (editTextarea.style.display === 'none') {
-                editTextarea.value = postContentP.innerText;
-                postContentP.style.display = 'none';
-                editTextarea.style.display = 'block';
-                saveButton.style.display = 'block';
-                editButton.innerText = 'Cancel';
-            } else {
-                postContentP.style.display = 'block';
-                editTextarea.style.display = 'none';
-                saveButton.style.display = 'none';
-                editButton.innerText = 'Edit';
-            }
-        });
+        if (loggedInUserId === post.post_username) {
+            editButton.style.display = 'block'; 
+        } else {
+            editButton.style.display = 'none';
+        }
 
-        saveButton.addEventListener('click', async function () {
-            const updatedContent = editTextarea.value.trim();
-            if (updatedContent === '') return;
+        if (editButton.style.display !== 'none') {
+            const saveButton = document.querySelector('.save-edit-btn');
+            const postContentP = document.querySelector('.post-content p');
+            const editTextarea = document.querySelector('.edit-textarea');
 
-            try {
-                const success = await updatePost(postId, updatedContent);
-                if (success) {
-                    postContentP.innerText = updatedContent;
+            editButton.addEventListener('click', function () {
+                if (editTextarea.style.display === 'none') {
+                    editTextarea.value = postContentP.innerText;
+                    postContentP.style.display = 'none';
+                    editTextarea.style.display = 'block';
+                    saveButton.style.display = 'block';
+                    editButton.innerText = 'Cancel';
+                } else {
                     postContentP.style.display = 'block';
                     editTextarea.style.display = 'none';
                     saveButton.style.display = 'none';
                     editButton.innerText = 'Edit';
-                } else {
-                    console.error('Failed to update post');
                 }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        });
-        //--------edit section end-------//
+            });
+
+            saveButton.addEventListener('click', async function () {
+                const updatedContent = editTextarea.value.trim();
+                if (updatedContent === '') return;
+
+                try {
+                    const success = await post.editPost(postId, updatedContent);
+                    if (success) {
+                        postContentP.innerText = updatedContent;
+                        postContentP.style.display = 'block';
+                        editTextarea.style.display = 'none';
+                        saveButton.style.display = 'none';
+                        editButton.innerText = 'Edit';
+                    } else {
+                        console.error('Failed to update post');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
     } else {
         console.log("error not valid postId");
     }
@@ -361,7 +373,6 @@ addCommentButton.addEventListener('click', async () => {
 
 getAndAssignDetails(postId);
 
-
 async function fetchCommentProfile(userId) {
     const userResponse = await fetch(`http://localhost:3000/api/user/${userId}`);
     const profileData = await userResponse.json();
@@ -371,20 +382,4 @@ async function fetchCommentProfile(userId) {
         console.error('Error: user profile not found');
     }
     return profile;
-}
-
-async function updatePost(postId, text) {
-    // const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
-    //     method: 'PUT',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({ text })
-    // });
-
-    // return response.ok;
-
-    // PLACEHOLDER
-    console.log(postId + " updated to " + text);
-    return "success";
 }
