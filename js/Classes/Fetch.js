@@ -60,6 +60,20 @@ class Fetch {
             console.error(error);
         }
     }
+    async editPost(postId, text) {
+        console.log(postId + " " + text)
+        const response = await fetch(`http://localhost:3000/blog/${postId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text })
+        });
+
+        console.log(response);
+
+        return response.ok;
+    }
     #mapPosts = (postData) => {
         const posts = [];
         postData.forEach(element => {
@@ -100,6 +114,26 @@ class Fetch {
             return this.#mapComments(commentData);
         } catch (error) {
             console.error('Fetch', error);
+        }
+    }
+    async editComment(commentId, postId, updatedData) {
+        try {
+            const response = await fetch(`${BACKEND_URL}/blog/comment/${commentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error updating comment: ${response.statusText}`);
+            }
+
+            return response.ok;
+        } catch (error) {
+            console.error('Failed to update comment:', error);
+            return false;
         }
     }
     #mapComments = (commentData) => {
