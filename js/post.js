@@ -86,6 +86,12 @@ function renderComment(data) {
         saveCommentButton.style.display = 'none';
         saveCommentButton.innerText = 'Save';
 
+        const deleteCommentButton = document.createElement('button');
+        deleteCommentButton.classList.add('delete-comment-btn', 'btn', 'btn-danger');
+        deleteCommentButton.style.display = 'none';
+        deleteCommentButton.innerText = 'Delete';
+
+
         const editCommentTextarea = document.createElement('textarea');
         editCommentTextarea.classList.add('edit-comment-textarea');
         editCommentTextarea.style.display = 'none';
@@ -113,11 +119,13 @@ function renderComment(data) {
                     commentText.style.display = 'none';
                     editCommentTextarea.style.display = 'block';
                     saveCommentButton.style.display = 'block';
+                    deleteCommentButton.style.display = 'block';
                     editCommentButton.innerText = 'Cancel';
                 } else {
                     commentText.style.display = 'block';
                     editCommentTextarea.style.display = 'none';
                     saveCommentButton.style.display = 'none';
+                    deleteCommentButton.style.display = 'none'; 
                     editCommentButton.innerText = 'Edit';
                 }
             });
@@ -133,6 +141,7 @@ function renderComment(data) {
                         commentText.style.display = 'block';
                         editCommentTextarea.style.display = 'none';
                         saveCommentButton.style.display = 'none';
+                        deleteCommentButton.style.display = 'none';
                         editCommentButton.innerText = 'Edit';
                     } else {
                         console.error('Failed to update comment');
@@ -142,8 +151,23 @@ function renderComment(data) {
                 }
             });
 
+            deleteCommentButton.addEventListener('click', async function () {
+                try {
+                    const success = await fetch.deleteComment(comment.id);
+                    if (success) {
+                        commentContainer.remove();
+                    } else {
+                        console.error('Failed to delete comment');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+
+
             commentBody.appendChild(editCommentTextarea);
             commentBody.appendChild(saveCommentButton);
+            commentBody.appendChild(deleteCommentButton);
             commentBody.appendChild(editCommentButton);
         }
     });
@@ -228,6 +252,7 @@ async function updatePost() {
 
     if (editButton.style.display !== 'none') {
         const saveButton = document.querySelector('.save-edit-btn');
+        const deleteButton = document.querySelector('.delete-post-btn');
         const postContentP = document.querySelector('.post-content p');
         const editTextarea = document.querySelector('.edit-textarea');
 
@@ -237,11 +262,13 @@ async function updatePost() {
                 postContentP.style.display = 'none';
                 editTextarea.style.display = 'block';
                 saveButton.style.display = 'block';
+                deleteButton.style.display = 'block'; 
                 editButton.innerText = 'Cancel';
             } else {
                 postContentP.style.display = 'block';
                 editTextarea.style.display = 'none';
                 saveButton.style.display = 'none';
+                deleteButton.style.display = 'none';
                 editButton.innerText = 'Edit';
             }
         });
@@ -257,6 +284,7 @@ async function updatePost() {
                     postContentP.style.display = 'block';
                     editTextarea.style.display = 'none';
                     saveButton.style.display = 'none';
+                    deleteButton.style.display = 'none';
                     editButton.innerText = 'Edit';
                 } else {
                     console.error('Failed to update post');
@@ -265,5 +293,19 @@ async function updatePost() {
                 console.error('Error:', error);
             }
         });
+
+        deleteButton.addEventListener('click', async function () { 
+            try {
+                const success = await fetch.deletePost(postId); 
+                if (success) {
+                    window.location.href = '/frontend/html/';
+                } else {
+                    console.error('Failed to delete post');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
     }
 }
