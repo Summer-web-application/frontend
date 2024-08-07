@@ -133,4 +133,6 @@ textarea {
     font-size: 1.2em;
     color: #16333f;
 }
-
+.text-blue {
+    color: rgb(116, 116, 228);
+}

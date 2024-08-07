@@ -35,13 +35,30 @@
             <div class="text-center mt-3">
                 <a href="createAccount.html" class="btn btn-link"  id="caccount">Don't have an account yet? Create one!</a>
             </div>
+            <div class ="text-center mt-3">
+            <span class ="text-blue" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Forgot password
+            </span>
+            </div>
+            <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+                <div> 
+                    <p>Password reset link will be sent to your email.</p>
+                </div>
+                <form>
+                    <label for="resetEmail" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="resetEmail" aria-describedby="emailHelp" required>
+                    <button type="submit" class="btn btn-primary w-100" id="resetPassword">Submit</button>
+                </form>
+            </div>
+            </div>
         </div>
-    </div>
+        
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-        <script src="../js/includer.js"></script>    
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+    <script src="../js/includer.js"></script>    
     <script type="module" src="../js/login.js"></script>
 </body>
 

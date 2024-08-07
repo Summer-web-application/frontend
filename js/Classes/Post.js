@@ -42,30 +42,6 @@ class Post {
     get likes(){
         return this.#likes;
     }
-
-    async editComment(commentId, postId, updatedData) {
-        console.log(commentId + " " + postId + " " +  JSON.stringify(updatedData))
-        // try {
-        //     const response = await fetch(`${BACKEND_URL}/blog/comment/${commentId}`, {
-        //         method: 'PUT',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify(updatedData)
-        //     });
-
-        //     if (!response.ok) {
-        //         throw new Error(`Error updating comment: ${response.statusText}`);
-        //     }
-
-        //     const data = await response.json();
-        //     return data.success;  // Assuming the API returns { success: true } on success
-        // } catch (error) {
-        //     console.error('Failed to update comment:', error);
-        //     return false;
-        // }
-    }
-
 }
             
 
