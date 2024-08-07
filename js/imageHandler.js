@@ -73,10 +73,10 @@ export const handleImageSelection = () => {
     });
 };
 
-export const getImageURL = () => {
-    const img = imagePreview.querySelector('img');
-    return img ? img.src : null;
-};
+export function getImageFile() {
+    const fileInput = document.getElementById('image-input');
+    return fileInput.files[0];
+}
 
 
 export const displayPostImage = (post, container) => {

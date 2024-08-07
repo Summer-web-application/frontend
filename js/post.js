@@ -91,7 +91,7 @@ function renderComment(data) {
         editCommentTextarea.style.display = 'none';
 
         // Profile things
-        commentProfile.appendChild(profilePicture);
+        //commentProfile.appendChild(profilePicture);
         commentProfile.appendChild(commentName);
         commentProfile.appendChild(commentUsername);
         commentContainer.appendChild(commentProfile);
