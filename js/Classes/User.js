@@ -127,6 +127,17 @@ class User {
         this.#token = undefined;
         sessionStorage.removeItem('user');
     }
+
+    async forgotPassword(email) {
+        console.log("This email", email);
+        try {
+            const response = await fetch(BACKEND_URL + `/user/forgot-password/${email}`);
+            console.log("User that forgot password: ", response);
+            
+        } catch (error) {
+            console.error(error);
+        }
+    }
     
 }
 export {User}

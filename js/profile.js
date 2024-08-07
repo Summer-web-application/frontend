@@ -12,7 +12,6 @@ function assignUserDetails() {
 
 async function getUserPosts() {
     try {
-        const data = await post.getOwnPosts(user.user_id);
         console.log("Users posts: ", data);
     } catch (error) {
         console.error(error);
