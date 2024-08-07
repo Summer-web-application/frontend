@@ -74,6 +74,26 @@ class Fetch {
 
         return response.ok;
     }
+    async deletePost(postId) {
+        try {
+            const response = await fetch(`${BACKEND_URL}/blog/${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error deleting post: ${response.statusText}`);
+            }
+    
+            return response.ok;
+        } catch (error) {
+            console.error('Failed to delete post:', error);
+            return false;
+        }
+    }
+    
     #mapPosts = (postData) => {
         const posts = [];
         postData.forEach(element => {
@@ -136,6 +156,26 @@ class Fetch {
             return false;
         }
     }
+    async deleteComment(commentId) {
+        try {
+            const response = await fetch(`${BACKEND_URL}/blog/comment/${commentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error deleting comment: ${response.statusText}`);
+            }
+    
+            return response.ok;
+        } catch (error) {
+            console.error('Failed to delete comment:', error);
+            return false;
+        }
+    }
+    
     #mapComments = (commentData) => {
         const comments = [];
         commentData.forEach(element => {
