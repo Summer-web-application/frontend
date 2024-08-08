@@ -57,6 +57,7 @@ export const displayImage = (imageDataURL, imagePreview, clearImage) => {
     imagePreview.appendChild(imgContainer);
 };
 
+//clear image input
 export const clearImage = () => {
     imagePreview.innerHTML = '';
     imageInput.value = '';
@@ -72,12 +73,6 @@ export const handleImageSelection = () => {
         }
     });
 };
-
-export function getImageFile() {
-    const fileInput = document.getElementById('image-input');
-    return fileInput.files[0];
-}
-
 
 export const displayPostImage = (post, container) => {
     if (post.image) {

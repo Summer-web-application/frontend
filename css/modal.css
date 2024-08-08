@@ -2,102 +2,110 @@ html, body {
     height: 100%;
     margin: 0;
 }
-.navbar {
-    background-color: #1e3949;
-}
 
-.navbar-brand, .navbar-nav .nav-link {
-    color: #fff;
-}
 body {
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
 }
+
+
 .post {
     position: relative;
     max-width: 600px;
-    margin: 30px auto;
-    padding: 10px 20px 13px;
+    font-size: medium;
+    padding: 15px; 
     background-color: #ffffff;
     border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; 
 }
+
+
 .profile-header {
     padding: 10px;
-    margin-bottom: -5px;
+    position: relative;/
 }
+
 .profile-header img {
     border-radius: 50%;
     width: 80px;
     height: 80px;
     border: 5px solid #ffffff;
     position: absolute;
-    top: -20px;
-    left: -10px;
+    top: -40px;
+    left: 10px;
 }
-.profile-info {
-    margin-left: -10px;
-    padding-top: -10px;
-}
+
+
 .profile-info h1 {
     margin: 0;
     font-size: 1.5em;
     color: #333333;
 }
+
 .profile-info p {
     color: #666666;
     margin: 2px 0;
 }
+
+.post-timestamp {
+    color: #666666;
+    margin: 2px 0;
+}
+
+
 .post-content {
     color: #333333;
-    margin-top: 5px;
-    margin-bottom: -10px;
+    /*margin-top: 20px;*/
     position: relative;
+    border-top: 1px solid #dddddd; 
+    padding-top: 10px;
 }
+
+
 .post-content p {
     margin-bottom: 10px;
 }
-.edit-post-btn  {
+
+.edit-post-btn, .edit-comment-btn, .save-comment-btn {
+    background-color: #1da1f2;
+    color: #ffffff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.edit-post-btn {
     display: none;
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #1da1f2;
-    color: #ffffff;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
     z-index: 10;
 }
-.edit-comment-btn, .save-comment-btn {
-    background-color: #1da1f2;
-    color: #ffffff;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    margin-left: 10px;
-}
+
 .save-comment-btn {
     background-color: #28a745;
 }
+
+
 .add-comment {
     display: flex;
     margin-top: 20px;
 }
+
 .add-comment textarea {
     flex: 1;
     height: 40px;
     padding: 10px;
     border: 1px solid #e0e0e0;
-    box-sizing: border-box;
     border-radius: 5px;
     margin-right: 10px;
     resize: vertical;
     overflow-y: hidden;
 }
+
 .add-comment button {
     padding: 10px 20px;
     height: 40px;
@@ -108,57 +116,19 @@ body {
     cursor: pointer;
     align-self: flex-end;
 }
+
+
 .comments-section {
-    margin-top: 10px;
+    margin-top: 20px;
 }
+
 .comment {
     padding: 10px;
     background-color: #f0f0f0;
     border-radius: 5px;
     margin-bottom: 10px;
 }
-.comment-profile {
-    margin-left: 10px;
-    margin-bottom: 10px;
-}
-.comment-body {
-    display: flex;
-    align-items: center;
-}
-.comment-profile p {
-    margin-bottom: 0px;
-}
-.comment-body {
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
-}
-.comment-timestamp {
-    margin-left: 10px;
-}
-.comment-profile img {
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-}
-.comment-profile-info h1 {
-    font-size: 1em;
-    color: #333333;
-    margin: 0;
-}
-.comment-profile-info p {
-    color: #666666;
-    margin: 0;
-    font-size: 0.9em;
-}
-.comment-content {
-    padding-left: 10px;
-}
-.comment-content p {
-    margin-bottom: 3px;
-    margin-top: 5px;
-}
+
 .reaction-button {
     background-color: transparent;
     color: #1e3949;
@@ -166,10 +136,12 @@ body {
     border: none;
     cursor: pointer;
 }
+
 .reaction-button.liked {
     color: red;
 }
-#reaction-button-2:hover {
+
+.reaction-button:hover {
     text-shadow: 0 0 2px #ff0000;
     color: #ff0000;
 }

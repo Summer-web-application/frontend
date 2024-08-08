@@ -1,15 +1,12 @@
-import { BACKEND_URL } from "../js/config.js";
 import { User } from "./Classes/User.js";
 import { Fetch } from "./Classes/Fetch.js";
-import { handleImageSelection, getImageFile, clearImage, displayPostImage } from './imageHandler.js';
-import { getAndAssignDetails } from './post.js';
+import { handleImageSelection, clearImage, displayPostImage } from './imageHandler.js';
 const fetch = new Fetch();
 const user = new User();
 const list = document.getElementById('blog-posts'); // container
 const input = document.getElementById('post-textarea');
 const postButton = document.getElementById('post-button');
 const charCount = document.getElementById('char-count');
-const postModal = new bootstrap.Modal(document.getElementById('postModal'));
 const maxChars = 250;
 
 
@@ -148,8 +145,7 @@ function renderPost(data) {
         commentButton.id = `reaction-button-1`; //assign post id to buttons class
         commentButton.classList.add('reaction-button', 'me-2');
         commentButton.addEventListener('click', () => {
-            getAndAssignDetails(post.id)
-            postModal.show()
+            openPostModal(post.id)
         });
         buttonContainer.appendChild(commentButton);
 
@@ -168,6 +164,15 @@ function renderPost(data) {
 
         list.prepend(div);
     })
+}
+
+function openPostModal(postId) {
+    const modalElement = document.getElementById('postModal');
+    const modal = new bootstrap.Modal(modalElement);
+
+    window.history.pushState({ postId }, '', `?postId=${postId}`);
+
+    modal.show();
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
