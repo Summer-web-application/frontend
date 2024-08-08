@@ -44,35 +44,22 @@ class Fetch {
     }
     async createPost(data) {
         try {
-            const formData = new FormData();
-            formData.append('text', data.text);
-            formData.append('likes', data.likes);
-            formData.append('user_id', data.user_id);
-
-            if (data.image) {
-                formData.append('image', data.image);
-            }
-    
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
             const response = await fetch(BACKEND_URL + '/blog/new', {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
             });
-    
-            if (!response.ok) {
-                throw new Error(`Error ${response.status}: ${response.statusText}`);
+            if(!response.ok) {
+                throw new Error(response.status, 'Not found or internal server');
             }
-    
             const postData = await response.json();
             return this.#mapPosts(postData);
-    
         } catch (error) {
             console.error(error);
         }
     }
-    
     async editPost(postId, text) {
         console.log(postId + " " + text)
         const response = await fetch(`http://localhost:3000/blog/${postId}`, {

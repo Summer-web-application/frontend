@@ -231,7 +231,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     } else {
         console.log("error not valid postId");
     }
+    // reset URL when modal is hidden
+    const modalElement = document.getElementById('postModal');
+    modalElement.addEventListener('hidden.bs.modal', function () {
+        // remove the postId param from URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete('postId');
+        history.replaceState(null, '', url.toString());
+        //location.reload()
+    });
 });
+
 
 addCommentButton.addEventListener('click', async () => {
     postComment(postId);

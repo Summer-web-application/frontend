@@ -7,6 +7,7 @@ const list = document.getElementById('blog-posts'); // container
 const input = document.getElementById('post-textarea');
 const postButton = document.getElementById('post-button');
 const charCount = document.getElementById('char-count');
+const postModal = new bootstrap.Modal(document.getElementById('postModal'));
 const maxChars = 250;
 
 
@@ -145,7 +146,10 @@ function renderPost(data) {
         commentButton.id = `reaction-button-1`; //assign post id to buttons class
         commentButton.classList.add('reaction-button', 'me-2');
         commentButton.addEventListener('click', () => {
-            openPostModal(post.id)
+            let postId = post.id
+            window.history.pushState({ postId }, '', `?postId=${postId}`);
+            location.reload()
+            postModal.show()
         });
         buttonContainer.appendChild(commentButton);
 
@@ -166,21 +170,18 @@ function renderPost(data) {
     })
 }
 
-function openPostModal(postId) {
-    const modalElement = document.getElementById('postModal');
-    const modal = new bootstrap.Modal(modalElement);
-
-    window.history.pushState({ postId }, '', `?postId=${postId}`);
-
-    modal.show();
-}
-
 document.addEventListener('DOMContentLoaded', async function () {
     if (list) {
         await getPosts();
         getUsersLikes();
     }
     updateCharCount();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('postId');
+    if (postId) {
+        postModal.show()
+    }
 });
 
 
