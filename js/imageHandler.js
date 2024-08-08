@@ -1,3 +1,4 @@
+import { BACKEND_URL } from "../js/config.js";
 const imageInput = document.getElementById('image-input');
 const imagePreview = document.getElementById('image-preview');
 
@@ -74,10 +75,20 @@ export const handleImageSelection = () => {
     });
 };
 
+export const getInputFile = () => {
+    const fileInput = document.getElementById('image-input');
+    if(fileInput.files.length > 0) {
+        return fileInput.files[0];
+    }
+    //return img ? img.src : null;
+    return null;
+};
+
+
 export const displayPostImage = (post, container) => {
     if (post.image) {
         const imageElement = document.createElement('img');
-        imageElement.src = post.image;
+        imageElement.src = BACKEND_URL + '/images/' + post.image;
         imageElement.style.maxWidth = '300px';
         imageElement.style.maxHeight = '300px';
         container.appendChild(imageElement);

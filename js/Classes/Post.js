@@ -4,15 +4,17 @@ class Post {
     #lastName = undefined;
     #username = undefined;
     #text = undefined;
+    #image = undefined;
     #createdAt = undefined;
     #likes = undefined;
 
-    constructor(id, firstName, lastName, username, text, createdAt, likes){
+    constructor(id, firstName, lastName, username, text, image, createdAt, likes){
         this.#id = id;
         this.#firstName = firstName;
         this.#lastName = lastName;
         this.#username = username;
         this.#text = text;
+        this.#image = image;
         this.#createdAt = createdAt;
         this.#likes = likes;
     }
@@ -31,6 +33,9 @@ class Post {
     }
     get text(){
         return this.#text;
+    }
+    get image() {
+        return this.#image;
     }
     get createdAt(){
         const fullDate = new Date(this.#createdAt);

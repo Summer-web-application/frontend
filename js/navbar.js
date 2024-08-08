@@ -61,7 +61,7 @@ async function fetchAllPosts() {
             throw new Error("Failed to fetch posts");
         }
         allPosts = await response.json();
-        console.log("All posts fetched:", allPosts);
+        //console.log("All posts fetched:", allPosts);
     } catch (error) {
         console.error("Error fetching posts:", error);
     }
@@ -72,22 +72,13 @@ function displaySearchResults(posts) {
     window.location.href = `post.html?postId=${posts[0].id}`;
 }
 
-document.getElementById('authButton').addEventListener('click', function () {
+document.getElementById('authButton').addEventListener('click',async function () {
     if (user.isLoggedIn) {
-        logout();
+        console.log("log out pressed");
+        await user.logout();
     } else {
-        login();
+        window.location.href = 'login.html';
     }
 });
-
-function login() {
-    window.location.href = 'login.html';
-    console.log("login");
-};
-
-function logout() {
-    console.log("Log out pressed");
-    user.logout();
-};
 
 initializeNavbar();

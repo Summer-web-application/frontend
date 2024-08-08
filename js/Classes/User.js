@@ -22,12 +22,10 @@ class User {
             this.#token = user.token;
         }
     }
-
     //getters
     get id(){
         return this.#user_id;
     }
-
     get username(){
         return this.#username;
     }
@@ -37,7 +35,6 @@ class User {
     get email(){
         return this.#email;
     }
-
     get token(){
         return this.#token;
     }
@@ -48,14 +45,12 @@ class User {
         }
         return false;
     }
-    //setters
-
 
     //methods
     async login(email, password) {
         const data = JSON.stringify({email: email, password:password});
         try {
-            const res = await fetch(BACKEND_URL + '/user/login', {
+            const response = await fetch(BACKEND_URL + '/user/login', {
                 method: 'POST',
                 headers:{
                     'Content-Type': 'application/json'
@@ -64,26 +59,19 @@ class User {
                 mode: 'cors', 
                 credentials: 'include',
             });
-            let cookie = res.headers.get('set-cookie');
-            console.log('set-cookie header value', cookie);
 
-            const contentType = res.headers.get('content-type'); 
-            if(!res.ok) {
+            if(!response.ok) {
                 throw new Error('res failed');
             }
-            if (contentType && contentType.includes('application/json')) {
-                const json = await res.json();
-                this.#user_id = json.id;
-                this.#username = json.username;
-                this.#email = json.email;
-                this.#token = json.token;
-                sessionStorage.setItem('user', JSON.stringify(json));
-                return this;
-            } else {
-                const resultText = await res.text();
-                return resultText;
-            }
-    
+            let cookie = response.headers.get('set-cookie');
+            console.log('set-cookie header value', cookie);
+
+            const json = await response.json();
+            this.#user_id = json.id;
+            this.#username = json.username;
+            this.#email = json.email;
+            sessionStorage.setItem('user', JSON.stringify(json));
+            return this;
         } catch (error) {
             console.error('Error reg:', error);
             throw error;
@@ -120,12 +108,24 @@ class User {
         }
     }
 
-    logout() {
-        this.#user_id = undefined;
-        this.#username = undefined;
-        this.#email = undefined;
-        this.#token = undefined;
-        sessionStorage.removeItem('user');
+    async logout() {
+        try{
+            const response = await fetch(BACKEND_URL + '/user/logout', {
+                method: 'POST',
+                credentials: 'include',
+            });
+            if(!response.ok){
+                console.log("logout fail");
+            }
+            console.log(response, "response from logout");
+            this.#user_id = undefined;
+            this.#username = undefined;
+            this.#email = undefined;
+            this.#token = undefined;
+            sessionStorage.removeItem('user');
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     async forgotPassword(email) {
@@ -138,6 +138,5 @@ class User {
             console.error(error);
         }
     }
-    
 }
 export {User}
