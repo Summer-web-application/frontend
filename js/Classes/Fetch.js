@@ -43,13 +43,15 @@ class Fetch {
         }
     }
     async createPost(data) {
+        console.log('form data: ', data);
+        for (let [key, value] of data.entries()) {
+            console.log(key, value, "in fetch");
+        }
         try {
             const response = await fetch(BACKEND_URL + '/blog/new', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
+                credentials: 'include',
+                body: data
             });
             if(!response.ok) {
                 throw new Error(response.status, 'Not found or internal server');
@@ -64,6 +66,7 @@ class Fetch {
         console.log(postId + " " + text)
         const response = await fetch(`http://localhost:3000/blog/${postId}`, {
             method: 'PUT',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -97,7 +100,7 @@ class Fetch {
     #mapPosts = (postData) => {
         const posts = [];
         postData.forEach(element => {
-            const post = new Post(element.id, element.first_name, element.last_name, element.username, element.text, element.created_at, element.likes);
+            const post = new Post(element.id, element.first_name, element.last_name, element.username, element.text,element.image, element.created_at, element.likes);
             posts.push(post);
         })
         return posts;
@@ -121,6 +124,7 @@ class Fetch {
         try {
             const response = await fetch(BACKEND_URL + '/blog/comment/new', {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -140,6 +144,7 @@ class Fetch {
         try {
             const response = await fetch(`${BACKEND_URL}/blog/comment/${commentId}`, {
                 method: 'PUT',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -196,6 +201,7 @@ class Fetch {
         try {
             const response = await fetch(BACKEND_URL + `/blog/post/like`, {
                 method: 'PUT',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json', 
                 },
@@ -221,6 +227,7 @@ class Fetch {
         try {
             const response = await fetch(BACKEND_URL + `/blog/comment/like`, {
                 method: 'PUT',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json', 
                 },

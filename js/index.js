@@ -1,13 +1,11 @@
 
-import { BACKEND_URL } from "../js/config.js";
 import { User } from "./Classes/User.js";
 import { Fetch } from "./Classes/Fetch.js";
-import { handleImageSelection, getImageURL, clearImage, displayPostImage } from './imageHandler.js';
+import { handleImageSelection, getInputFile, clearImage, displayPostImage } from './imageHandler.js';
 const fetch = new Fetch();
 const user = new User();
 const list = document.getElementById('blog-posts'); // container
 const input = document.getElementById('post-textarea');
-const postButton = document.getElementById('post-button');
 const charCount = document.getElementById('char-count');
 const maxChars = 250;
 
@@ -20,15 +18,9 @@ const updateCharCount = () => {
 // handle image selection
 handleImageSelection();
 
-async function addPost () {
-    const text = input.value.trim();
-    const likes = 0;
-    const user_id = user.id;
-    const image = getImageURL()
-    if (text !== '') {
+async function addPost (formData) {
         try {
-        const data = { text, likes, user_id, image };
-        const newPost = await fetch.createPost(data);
+        const newPost = await fetch.createPost(formData);
         renderPost(newPost);
         input.value = '';
         updateCharCount();
@@ -36,10 +28,6 @@ async function addPost () {
         } catch (error) {
             console.error(error);
         }
-    } else {
-        //here some kind of error message
-        console.log("Can't be empty");
-    }
 };
 async function getUsersLikes() {
     try {
@@ -73,14 +61,6 @@ async function likeDislikePost(post_id, classList) {
         }
     } catch (error) {
         console.log(error);
-    }
-}
-
-function authCheck(){
-    if(user.isLoggedIn){
-        addPost();
-    } else {
-        window.location.href="loginPrompt.html";
     }
 }
 async function getPosts () {
@@ -171,4 +151,31 @@ document.addEventListener('DOMContentLoaded',async function() {
 
 
 input.addEventListener('input', updateCharCount);
-postButton.addEventListener('click', authCheck);
+
+document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = input.value.trim();
+    const file = getInputFile()
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    formData.append('text', text);
+    formData.append('user_id', user.id);
+    if (file) {
+        formData.append('image', file);
+    }
+    for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+    }
+    try {
+        if(text === '' && !file){
+            console.log("no text or file");
+            alert('Post needs text or image!');
+            return;
+        }
+        await addPost(formData)
+    } catch (error) {
+        console.error(error);
+    }
+});
