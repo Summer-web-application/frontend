@@ -16,7 +16,7 @@ body {
     margin-top: 20px;
 }
 
-.post-container, .blog-posts-container {
+.post-container {
     width: 100%;
     max-width: 600px;
 }
@@ -136,3 +136,4 @@ textarea {
 .text-blue {
     color: rgb(116, 116, 228);
 }
+

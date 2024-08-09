@@ -9,6 +9,7 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="../css/styles.css" rel="stylesheet">
+    <link href="../css/modal.css" rel="stylesheet">
 </head>
 
 <body>
@@ -51,11 +52,60 @@
     </div>
 
 
+    <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="postModalLabel">Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="post">
+                        <button class="edit-post-btn btn btn-primary">Edit</button>
+                        <div class="profile-header">
+                            <div class="profile-info">
+                                <h1></h1>
+                                <p></p>
+                                <div class="post-timestamp"></div>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <p></p>
+                            <textarea class="edit-textarea" style="display: none;"></textarea>
+                            <button class="save-edit-btn btn btn-success" style="display: none;">Save</button>
+                            <button class="delete-post-btn btn btn-danger" style="display: none;">Delete</button>
+                        </div>
+
+                        <div class="add-comment">
+                            <textarea id="add-comment-text" placeholder="Add a comment..."></textarea>
+                            <button id="add-comment-button">Post</button>
+                        </div>
+                        <div class="comments-section">
+                            <div class="comment">
+                                <div class="id" style="display:none">0</div>
+                                <div class="comment-profile">
+                                    <div class="comment-profile-info">
+                                        <h1></h1>
+                                        <p></p>
+                                    </div>
+                                </div>
+                                <div class="comment-content">
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
     <script src="../js/includer.js"></script>
     <script type="module" src="../js/index.js"></script>
+    <script type="module" src="../js/post.js"></script>
 </body>
 
 </html>

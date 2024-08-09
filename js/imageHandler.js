@@ -58,6 +58,7 @@ export const displayImage = (imageDataURL, imagePreview, clearImage) => {
     imagePreview.appendChild(imgContainer);
 };
 
+//clear image input
 export const clearImage = () => {
     imagePreview.innerHTML = '';
     imageInput.value = '';

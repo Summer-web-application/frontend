@@ -7,7 +7,9 @@ const user = new User();
 const list = document.getElementById('blog-posts'); // container
 const input = document.getElementById('post-textarea');
 const charCount = document.getElementById('char-count');
+const postModal = new bootstrap.Modal(document.getElementById('postModal'));
 const maxChars = 250;
+
 
 // update the character count display
 const updateCharCount = () => {
@@ -40,7 +42,7 @@ async function getUsersLikes() {
         const likedComments = await fetch.getUserPostLikes(user.id);
         likedComments.forEach(element => {
             const likeButton = document.querySelector(`#reaction-button-2[data="${element.post_id}"]`);
-            if(likeButton) {
+            if (likeButton) {
                 likeButton.classList.add('liked');
             }
         })
@@ -48,6 +50,7 @@ async function getUsersLikes() {
         console.log(error);
     }
 }
+
 async function likeDislikePost(post_id, classList) {
     try {
         //pass classlist to check the users comment like state
@@ -57,13 +60,13 @@ async function likeDislikePost(post_id, classList) {
         }
         //update the like count
         const likeButton = document.querySelector(`#reaction-button-2[data="${post_id}"]`);
-        if(!likeButton) {
+        if (!likeButton) {
             console.log("like button of post not found");
             return;
         }
         likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${updateLikes}`;
         //toggle the buttons classlist
-        if(likeButton.classList.contains("liked")) {
+        if (likeButton.classList.contains("liked")) {
             likeButton.classList.remove('liked');
         } else {
             likeButton.classList.add('liked');
@@ -82,80 +85,89 @@ async function getPosts () {
     }
 }
 function renderPost(data) {
-        data.forEach(post => {
-            // main container
-            const div = document.createElement('div');
-            div.setAttribute('class', 'blog-posts-container-item');
+    data.forEach(post => {
+        // main container
+        const div = document.createElement('div');
+        div.setAttribute('class', 'blog-posts-container-item');
 
-            //container for name
-            const nameContainer = document.createElement('div'); // for firstname and lastname
-            nameContainer.classList.add('name-container-item'); //for css styling
-            const userNameContainer = document.createElement('div'); // for the username
-            userNameContainer.classList.add('username-container-item'); 
+        //container for name
+        const nameContainer = document.createElement('div'); // for firstname and lastname
+        nameContainer.classList.add('name-container-item'); //for css styling
+        const userNameContainer = document.createElement('div'); // for the username
+        userNameContainer.classList.add('username-container-item');
 
-            //first name element
-            const firstNameElement = document.createElement('p');
-            firstNameElement.textContent = post.firstName;
-            nameContainer.appendChild(firstNameElement);
+        //first name element
+        const firstNameElement = document.createElement('p');
+        firstNameElement.textContent = post.firstName;
+        nameContainer.appendChild(firstNameElement);
 
-            //last name element
-            const lastNameElement = document.createElement('p');
-            lastNameElement.textContent = post.lastName;
-            nameContainer.appendChild(lastNameElement);
+        //last name element
+        const lastNameElement = document.createElement('p');
+        lastNameElement.textContent = post.lastName;
+        nameContainer.appendChild(lastNameElement);
 
-            //add name container to main container
-            div.appendChild(nameContainer);
+        //add name container to main container
+        div.appendChild(nameContainer);
 
-            //username element
-            const userNameElement = document.createElement('p');
-            userNameElement.textContent = "@" + post.username;
-            userNameContainer.appendChild(userNameElement);
+        //username element
+        const userNameElement = document.createElement('p');
+        userNameElement.textContent = "@" + post.username;
+        userNameContainer.appendChild(userNameElement);
 
-            div.appendChild(userNameContainer);
-            //main text element
-            const textElement = document.createElement('p');
-            textElement.textContent = post.text;
-            div.appendChild(textElement);
+        div.appendChild(userNameContainer);
+        //main text element
+        const textElement = document.createElement('p');
+        textElement.textContent = post.text;
+        div.appendChild(textElement);
 
-            displayPostImage(post, div);
+        displayPostImage(post, div);
 
-            // button container
-            const buttonContainer = document.createElement('div');
-            buttonContainer.classList.add('d-flex', 'justify-content-end', 'mt-2');
+        // button container
+        const buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('d-flex', 'justify-content-end', 'mt-2');
 
-            // check comments button
-            const commentButton = document.createElement('button');
-            commentButton.innerHTML = `<i class="bi bi-chat-right-text-fill"></i> Comment`;
-            commentButton.id = `reaction-button-1`; //assign post id to buttons class
-            commentButton.classList.add('reaction-button', 'me-2');
-            commentButton.addEventListener('click', () => {
-                window.location.href = `post.html?postId=${post.id}`;
-            });
-            buttonContainer.appendChild(commentButton);
+        // check comments button
+        const commentButton = document.createElement('button');
+        commentButton.innerHTML = `<i class="bi bi-chat-right-text-fill"></i> Comment`;
+        commentButton.id = `reaction-button-1`; //assign post id to buttons class
+        commentButton.classList.add('reaction-button', 'me-2');
+        commentButton.addEventListener('click', () => {
+            let postId = post.id
+            window.history.pushState({ postId }, '', `?postId=${postId}`);
+            location.reload()
+            postModal.show()
+        });
+        buttonContainer.appendChild(commentButton);
 
-                // like button
-            const likeButton = document.createElement('button');
-            likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${post.likes}`;
-            likeButton.id = `reaction-button-2`;
-            likeButton.classList.add('reaction-button', 'me-2');
-            likeButton.setAttribute('data', post.id);
-            likeButton.addEventListener('click', () => {
+        // like button
+        const likeButton = document.createElement('button');
+        likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${post.likes}`;
+        likeButton.id = `reaction-button-2`;
+        likeButton.classList.add('reaction-button', 'me-2');
+        likeButton.setAttribute('data', post.id);
+        likeButton.addEventListener('click', () => {
             likeDislikePost(post.id, likeButton.classList);
-            });
-            buttonContainer.appendChild(likeButton);
+        });
+        buttonContainer.appendChild(likeButton);
 
-            div.appendChild(buttonContainer);
+        div.appendChild(buttonContainer);
 
-            list.prepend(div);
-            })
+        list.prepend(div);
+    })
 }
 
-document.addEventListener('DOMContentLoaded',async function() {
+document.addEventListener('DOMContentLoaded', async function () {
     if (list) {
         await getPosts();
         getUsersLikes();
     }
     updateCharCount();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('postId');
+    if (postId) {
+        postModal.show()
+    }
 });
 
 

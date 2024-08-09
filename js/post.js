@@ -1,7 +1,6 @@
 
 import { Fetch } from "./Classes/Fetch.js";
 import { User } from "./Classes/User.js";
-
 const urlParams = new URLSearchParams(window.location.search);
 const postId = urlParams.get('postId');
 const fetch = new Fetch();
@@ -21,7 +20,7 @@ async function getAndAssignDetails(post_id) {
         console.log(error)
     }
 }
-async function getPostComments(postId) {
+async function getPostComments() {
     try {
         container.innerHTML = '';
         const comments = await fetch.getComments(postId);
@@ -97,7 +96,7 @@ function renderComment(data) {
         editCommentTextarea.style.display = 'none';
 
         // Profile things
-        commentProfile.appendChild(profilePicture);
+        //commentProfile.appendChild(profilePicture);
         commentProfile.appendChild(commentName);
         commentProfile.appendChild(commentUsername);
         commentContainer.appendChild(commentProfile);
@@ -237,7 +236,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     } else {
         console.log("error not valid postId");
     }
+    // reset URL when modal is hidden
+    const modalElement = document.getElementById('postModal');
+    modalElement.addEventListener('hidden.bs.modal', function () {
+        // remove the postId param from URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete('postId');
+        history.replaceState(null, '', url.toString());
+        //location.reload()
+    });
 });
+
 
 addCommentButton.addEventListener('click', async () => {
     postComment(postId);
