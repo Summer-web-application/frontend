@@ -74,8 +74,8 @@ function displaySearchResults(posts) {
 
 document.getElementById('authButton').addEventListener('click',async function () {
     if (user.isLoggedIn) {
-        console.log("log out pressed");
         await user.logout();
+        window.location.reload();
     } else {
         window.location.href = 'login.html';
     }

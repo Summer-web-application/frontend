@@ -19,17 +19,23 @@ const updateCharCount = () => {
 handleImageSelection();
 
 async function addPost (formData) {
-        try {
+    try {
         const newPost = await fetch.createPost(formData);
         renderPost(newPost);
         input.value = '';
         updateCharCount();
         clearImage();
-        } catch (error) {
-            console.error(error);
-        }
+    } catch (error) {
+        console.error(error);
+        input.value = '';
+        updateCharCount();
+        clearImage();
+    }
 };
 async function getUsersLikes() {
+    if(!user.isLoggedIn){
+        return;
+    }
     try {
         const likedComments = await fetch.getUserPostLikes(user.id);
         likedComments.forEach(element => {
@@ -46,6 +52,9 @@ async function likeDislikePost(post_id, classList) {
     try {
         //pass classlist to check the users comment like state
         const updateLikes = await fetch.likeDislikePost(post_id, classList, user.id);
+        if(updateLikes === undefined) {
+            return;
+        }
         //update the like count
         const likeButton = document.querySelector(`#reaction-button-2[data="${post_id}"]`);
         if(!likeButton) {

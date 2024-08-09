@@ -59,12 +59,14 @@ class User {
                 mode: 'cors', 
                 credentials: 'include',
             });
-
-            if(!response.ok) {
-                throw new Error('res failed');
+            if (!response.ok) { 
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(`Error: ${errorResponse.error}`);
+                return;
             }
-            let cookie = response.headers.get('set-cookie');
-            console.log('set-cookie header value', cookie);
+            // let cookie = response.headers.get('set-cookie');
+            // console.log('set-cookie header value', cookie);
 
             const json = await response.json();
             this.#user_id = json.id;
@@ -79,31 +81,25 @@ class User {
     }
 
     async register(firstName, lastName, userName, email, password) {
-    
         const data = JSON.stringify({first_name: firstName, last_name:lastName, username:userName, email:email, password:password});
-    
         try {
-            const res = await fetch(BACKEND_URL + '/user/register',{
+            const response = await fetch(BACKEND_URL + '/user/register',{
                 method: 'POST',
                 headers:{
                     'Content-Type': 'application/json'
                 },
                 body: data
             });
-    
-            const contentType = res.headers.get('content-type'); 
-            if(!res.ok) {
-                throw new Error('res failed');
+            if (!response.ok) { 
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(`Error: ${errorResponse.error}`);
+                return;
             }
-            if (contentType && contentType.includes('application/json')) {
-                const resultJson = await res.json();
-                return resultJson;
-            } else {
-                const resultText = await res.text();
-                return resultText;
-            }
+            const result = await response.json();
+            return result;
         } catch (error) {
-            console.error('Error reg:', error);
+            console.error('Network or Unexpected Error:', error);
             throw error;
         }
     }
@@ -114,10 +110,12 @@ class User {
                 method: 'POST',
                 credentials: 'include',
             });
-            if(!response.ok){
-                console.log("logout fail");
+            if (!response.ok) { 
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(`Error: ${errorResponse.error}`);
+                return;
             }
-            console.log(response, "response from logout");
             this.#user_id = undefined;
             this.#username = undefined;
             this.#email = undefined;
@@ -129,11 +127,16 @@ class User {
     }
 
     async forgotPassword(email) {
-        console.log("This email", email);
         try {
             const response = await fetch(BACKEND_URL + `/user/forgot-password/${email}`);
-            console.log("User that forgot password: ", response);
-            
+            if (!response.ok) { 
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(`Error: ${errorResponse.error}`);
+                return;
+            }
+            const data = await response.json();
+            return data;
         } catch (error) {
             console.error(error);
         }

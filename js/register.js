@@ -20,15 +20,15 @@ registerButton.addEventListener('click', async (e) => {
     const confPassword = confPassword_input.value;
 
     if(password != confPassword){
-        console.log("Passwords don't match!");
-       return;
+        alert('Passwords do not match!');
+        return;
     }
     try {
         const result = await user.register(firstName,lastName,userName,email,password);
-        console.log("responce received: ", result);
+        alert(`Account created successfully for email: ${result.email}`)
         window.location.href = "login.html";
     } catch (error){
-        console.error("register error", error);
+        console.error("register error: ", error.message);
     }
 })
 

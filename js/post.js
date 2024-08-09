@@ -39,7 +39,7 @@ async function postComment(post_id) {
         renderComment(comment);
         addCommentText.value = '';
     } else {
-        console.log("Not valid comment");
+        addCommentText.value = '';
     }
 }
 function renderComment(data) {
@@ -174,6 +174,9 @@ function renderComment(data) {
 
 }
 async function getUsersLikes() {
+    if(!user.isLoggedIn){
+        return;
+    }
     try {
         const likedComments = await fetch.getUserCommentLikes(user.id, postId);
         likedComments.forEach(element => {
@@ -190,10 +193,12 @@ async function likeDislikeComment(commentId, classList) {
     try {
         //pass classlist to check the users comment like state
         const updateLikes = await fetch.likeDislikeComment(commentId, postId, classList, user.id);
+        if(updateLikes === undefined){
+            return;
+        }
         //update the like count
         const likeButton = document.querySelector(`#reaction-button-2[data="${commentId}"]`);
         if (!likeButton) {
-            console.log("likebutton not found");
             return;
         }
         likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${updateLikes}`;
@@ -239,12 +244,13 @@ addCommentButton.addEventListener('click', async () => {
 });
 
 async function updatePost() {
-    const loggedInUserId = JSON.parse(sessionStorage.getItem('user')).username;
+    //const loggedInUserId = JSON.parse(sessionStorage.getItem('user')).username;
+    //console.log(loggedInUserId, 'what');
     const editButton = document.querySelector('.edit-post-btn');
 
     const postUsername = document.querySelector(".profile-info p").textContent
 
-    if ("@" + loggedInUserId === postUsername) {
+    if ("@" + user.username === postUsername) {
         editButton.style.display = 'block';
     } else {
         editButton.style.display = 'none';

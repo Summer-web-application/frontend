@@ -8,23 +8,29 @@ class Fetch {
     async getAllPosts() {
         try {
             const response = await fetch(BACKEND_URL + '/blog');
-            if(!response.ok){
-                throw new Error("res failed" + res.statusText);
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(errorResponse.error);
+                return;
             }
             const data = await response.json();
             return this.#mapPosts(data);
         } catch (error){
-            console.error(error);
+            console.error("Fetch error: ", error);
         }
     };
 
     async getOnePost(postId) {
         try {
-            const res = await fetch(BACKEND_URL + `/blog/${postId}`);
-            if(!res.ok) {
-                throw new Error("response failed" + res.statusText);
+            const response = await fetch(BACKEND_URL + `/blog/${postId}`);
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(errorResponse.error);
+                return;
             }
-            const data = await res.json();
+            const data = await response.json();
             return this.#mapPosts(data);
         } catch (error) {
             console.error("Fetch error: ", error);
@@ -33,8 +39,11 @@ class Fetch {
     async getOwnPosts(user_id) {
         try {
             const response = await fetch(BACKEND_URL + `/blog/user/${user_id}/posts`);
-            if(!response.ok) {
-                throw new Error("response failed" + response.statusText);
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(errorResponse.error);
+                return;
             }
             const data = await response.json();
             return this.#mapPosts(data);
@@ -53,8 +62,11 @@ class Fetch {
                 credentials: 'include',
                 body: data
             });
-            if(!response.ok) {
-                throw new Error(response.status, 'Not found or internal server');
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(errorResponse.error);
+                return;
             }
             const postData = await response.json();
             return this.#mapPosts(postData);
@@ -72,24 +84,29 @@ class Fetch {
             },
             body: JSON.stringify({ text })
         });
-
-        console.log(response);
-
+        if (!response.ok) {
+            const errorResponse = await response.json();
+            console.error('HTTP Error:', errorResponse.error);
+            alert(errorResponse.error);
+            return;
+        }
         return response.ok;
     }
     async deletePost(postId) {
         try {
             const response = await fetch(`${BACKEND_URL}/blog/${postId}`, {
                 method: 'DELETE',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 }
             });
-    
             if (!response.ok) {
-                throw new Error(`Error deleting post: ${response.statusText}`);
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(errorResponse.error);
+                return;
             }
-    
             return response.ok;
         } catch (error) {
             console.error('Failed to delete post:', error);
@@ -109,11 +126,14 @@ class Fetch {
     //#region Comments
     async getComments(postId) {
         try {
-            const res = await fetch(BACKEND_URL + `/blog/${postId}/comments`)
-            if(!res.ok){
-                throw new Error("response failed" + res.statusText);
+            const response = await fetch(BACKEND_URL + `/blog/${postId}/comments`)
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(errorResponse.error);
+                return;
             }
-            const data = await res.json();
+            const data = await response.json();
             return this.#mapComments(data);
         } catch (error) {
             console.error("Fetch error: ", error);
@@ -130,9 +150,11 @@ class Fetch {
                 },
                 body: JSON.stringify(data)
             });
-
-            if(!response.ok) {
-                throw new Error(response.status, 'Not found or internal server');
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(errorResponse.error);
+                return;
             }
             const commentData = await response.json();
             return this.#mapComments(commentData);
@@ -150,9 +172,11 @@ class Fetch {
                 },
                 body: JSON.stringify(updatedData)
             });
-
             if (!response.ok) {
-                throw new Error(`Error updating comment: ${response.statusText}`);
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(errorResponse.error);
+                return;
             }
 
             return response.ok;
@@ -165,15 +189,17 @@ class Fetch {
         try {
             const response = await fetch(`${BACKEND_URL}/blog/comment/${commentId}`, {
                 method: 'DELETE',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 }
             });
-    
             if (!response.ok) {
-                throw new Error(`Error deleting comment: ${response.statusText}`);
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(errorResponse.error);
+                return;
             }
-    
             return response.ok;
         } catch (error) {
             console.error('Failed to delete comment:', error);
@@ -207,8 +233,11 @@ class Fetch {
                 },
                 body: JSON.stringify({post_id, user_id, like_status})
             });
-            if(!response.ok) {
-                throw new Error(response.status, 'Not found or internal server');
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(errorResponse.error);
+                return;
             }
             const data = await response.json();
             const updatedLikes = data[0].likes;
@@ -233,8 +262,11 @@ class Fetch {
                 },
                 body: JSON.stringify({comment_id, user_id, post_id, like_status})
             });
-            if(!response.ok) {
-                throw new Error(response.status, 'Not found or internal server');
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(errorResponse.error);
+                return;
             }
             const data = await response.json();
             const updatedLikes = data[0].likes;
@@ -246,27 +278,31 @@ class Fetch {
     async getUserPostLikes(user_id) {
         try {
             const response = await fetch(BACKEND_URL + `/blog/${user_id}/posts/likes`);
-            if(!response.ok){
-                throw new Error("response failed" + response.statusText);
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(errorResponse.error);
+                return;
             }
             const data = await response.json();
             return data;
         } catch (error) {
             console.error("error: ", error);
-            throw error;
         }
     }
     async getUserCommentLikes(user_id, post_id) {
         try {
             const response = await fetch(BACKEND_URL + `/blog/${user_id}/${post_id}/comments/likes`);
-            if(!response.ok){
-                throw new Error("response failed" + response.statusText);
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('HTTP Error:', errorResponse.error);
+                alert(errorResponse.error);
+                return;
             }
             const data = await response.json();
             return data;
         } catch (error) {
             console.error("error: ", error);
-            throw error;
         }
     }
     //#endregion
