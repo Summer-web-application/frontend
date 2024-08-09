@@ -310,7 +310,7 @@ async function updatePost() {
             try {
                 const success = await fetch.deletePost(postId); 
                 if (success) {
-                    window.location.href = '/frontend/html/';
+                    window.location.href = 'index.html';
                 } else {
                     console.error('Failed to delete post');
                 }
