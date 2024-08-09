@@ -63,17 +63,14 @@ class User {
                 const errorResponse = await response.json();
                 console.error('HTTP Error:', errorResponse.error);
                 alert(`Error: ${errorResponse.error}`);
-                return;
+                return false;
             }
-            // let cookie = response.headers.get('set-cookie');
-            // console.log('set-cookie header value', cookie);
-
             const json = await response.json();
             this.#user_id = json.id;
             this.#username = json.username;
             this.#email = json.email;
             sessionStorage.setItem('user', JSON.stringify(json));
-            return this;
+            return true;
         } catch (error) {
             console.error('Error reg:', error);
             throw error;

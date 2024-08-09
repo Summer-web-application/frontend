@@ -12,7 +12,12 @@ loginButton.addEventListener('click', async (e) => {
     const email = email_input.value;
     const password = password_input.value;
     try {
-        await user.login(email,password);
+        const loginStatus = await user.login(email,password);
+        if(!loginStatus) {
+            email_input.value = '';
+            password_input.value = '';
+            return;
+        }
         window.location.href = 'index.html';
     } catch (error) {
        console.error(error);
@@ -24,7 +29,6 @@ resetButton.addEventListener('click', async (e) => {
     const email = resetEmail_input.value;
     try {
         const data = await user.forgotPassword(email);
-        console.log(data, "TOIMIIKO TÄMÄ")
         alert(data.message);
         resetEmail_input.value = '';
     } catch (error) {

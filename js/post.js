@@ -1,6 +1,6 @@
-
 import { Fetch } from "./Classes/Fetch.js";
 import { User } from "./Classes/User.js";
+import { BACKEND_URL } from "./config.js";
 const urlParams = new URLSearchParams(window.location.search);
 const postId = urlParams.get('postId');
 const fetch = new Fetch();
@@ -15,9 +15,20 @@ async function getAndAssignDetails(post_id) {
         document.querySelector('.profile-header .profile-info h1').innerText = post[0].firstName + ' ' + post[0].lastName;
         document.querySelector('.profile-header .profile-info p').innerText = '@' + post[0].username;
         document.querySelector('.post-content p').innerText = post[0].text;
+        if(post[0].image !== '') {
+            const postImage = document.querySelector('.post-image');
+            assignImage(post[0].image, postImage);
+        }
         document.querySelector('.post-timestamp').innerText = post[0].createdAt;
     } catch (error) {
         console.log(error)
+    }
+}
+function assignImage(imageValue, postImage) {
+    if (postImage) {
+        postImage.src = BACKEND_URL + '/images/' + imageValue;
+        postImage.style.maxWidth = '300px';
+        postImage.style.maxHeight = '300px';
     }
 }
 async function getPostComments() {
@@ -90,26 +101,20 @@ function renderComment(data) {
         deleteCommentButton.style.display = 'none';
         deleteCommentButton.innerText = 'Delete';
 
-
         const editCommentTextarea = document.createElement('textarea');
         editCommentTextarea.classList.add('edit-comment-textarea');
         editCommentTextarea.style.display = 'none';
 
-        // Profile things
         //commentProfile.appendChild(profilePicture);
         commentProfile.appendChild(commentName);
         commentProfile.appendChild(commentUsername);
         commentContainer.appendChild(commentProfile);
 
-        // Comment body things
         commentBody.appendChild(commentText);
         commentBody.appendChild(likeButton);
         commentContainer.appendChild(commentBody);
         commentContainer.appendChild(date);
         container.appendChild(commentContainer);
-
-        console.log(user.username)
-        console.log(comment.username)
 
         if (user.username === comment.username) {
             editCommentButton.addEventListener('click', function () {
@@ -149,7 +154,6 @@ function renderComment(data) {
                     console.error('Error:', error);
                 }
             });
-
             deleteCommentButton.addEventListener('click', async function () {
                 try {
                     const success = await fetch.deleteComment(comment.id);
@@ -162,15 +166,12 @@ function renderComment(data) {
                     console.error('Error:', error);
                 }
             });
-
-
             commentBody.appendChild(editCommentTextarea);
             commentBody.appendChild(saveCommentButton);
             commentBody.appendChild(deleteCommentButton);
             commentBody.appendChild(editCommentButton);
         }
     });
-
 }
 async function getUsersLikes() {
     if(!user.isLoggedIn){
@@ -243,18 +244,14 @@ document.addEventListener("DOMContentLoaded", async function () {
         const url = new URL(window.location.href);
         url.searchParams.delete('postId');
         history.replaceState(null, '', url.toString());
-        //location.reload()
     });
 });
-
 
 addCommentButton.addEventListener('click', async () => {
     postComment(postId);
 });
 
 async function updatePost() {
-    //const loggedInUserId = JSON.parse(sessionStorage.getItem('user')).username;
-    //console.log(loggedInUserId, 'what');
     const editButton = document.querySelector('.edit-post-btn');
 
     const postUsername = document.querySelector(".profile-info p").textContent

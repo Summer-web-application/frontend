@@ -80,15 +80,14 @@ export const getInputFile = () => {
     if(fileInput.files.length > 0) {
         return fileInput.files[0];
     }
-    //return img ? img.src : null;
     return null;
 };
 
 
-export const displayPostImage = (post, container) => {
-    if (post.image) {
+export const displayPostImage = (postImage, container) => {
+    if (postImage) {
         const imageElement = document.createElement('img');
-        imageElement.src = BACKEND_URL + '/images/' + post.image;
+        imageElement.src = BACKEND_URL + '/images/' + postImage;
         imageElement.style.maxWidth = '300px';
         imageElement.style.maxHeight = '300px';
         container.appendChild(imageElement);

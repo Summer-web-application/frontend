@@ -61,14 +61,12 @@ async function fetchAllPosts() {
             throw new Error("Failed to fetch posts");
         }
         allPosts = await response.json();
-        //console.log("All posts fetched:", allPosts);
     } catch (error) {
         console.error("Error fetching posts:", error);
     }
 }
 
 function displaySearchResults(posts) {
-    console.log("Search Results:", posts);
     window.location.href = `post.html?postId=${posts[0].id}`;
 }
 

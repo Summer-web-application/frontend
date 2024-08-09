@@ -61,7 +61,6 @@ async function likeDislikePost(post_id, classList) {
         //update the like count
         const likeButton = document.querySelector(`#reaction-button-2[data="${post_id}"]`);
         if (!likeButton) {
-            console.log("like button of post not found");
             return;
         }
         likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${updateLikes}`;
@@ -120,7 +119,7 @@ function renderPost(data) {
         textElement.textContent = post.text;
         div.appendChild(textElement);
 
-        displayPostImage(post, div);
+        displayPostImage(post.image, div);
 
         // button container
         const buttonContainer = document.createElement('div');
@@ -131,7 +130,8 @@ function renderPost(data) {
         commentButton.innerHTML = `<i class="bi bi-chat-right-text-fill"></i> Comment`;
         commentButton.id = `reaction-button-1`; //assign post id to buttons class
         commentButton.classList.add('reaction-button', 'me-2');
-        commentButton.addEventListener('click', () => {
+        commentButton.addEventListener('click', (e) => {
+            e.preventDefault();
             let postId = post.id
             window.history.pushState({ postId }, '', `?postId=${postId}`);
             location.reload()
@@ -186,12 +186,8 @@ document.getElementById('uploadForm').addEventListener('submit', async (e) => {
     if (file) {
         formData.append('image', file);
     }
-    for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-    }
     try {
         if(text === '' && !file){
-            console.log("no text or file");
             alert('Post needs text or image!');
             return;
         }

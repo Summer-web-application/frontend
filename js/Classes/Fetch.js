@@ -52,10 +52,6 @@ class Fetch {
         }
     }
     async createPost(data) {
-        console.log('form data: ', data);
-        for (let [key, value] of data.entries()) {
-            console.log(key, value, "in fetch");
-        }
         try {
             const response = await fetch(BACKEND_URL + '/blog/new', {
                 method: 'POST',
@@ -75,7 +71,6 @@ class Fetch {
         }
     }
     async editPost(postId, text) {
-        console.log(postId + " " + text)
         const response = await fetch(`http://localhost:3000/blog/${postId}`, {
             method: 'PUT',
             credentials: 'include',
