@@ -7,6 +7,7 @@ class Comment {
 #likes = undefined;
 #date = undefined;
 
+// set comment data
 constructor(id, firstName, lastName, username, text, likes, date){
     this.#id = id;
     this.#firstName = firstName;
@@ -16,10 +17,11 @@ constructor(id, firstName, lastName, username, text, likes, date){
     this.#likes = likes;
     this.#date = date;
 }
+
+// getters
 get id() {
     return this.#id;
 }
-
 get name(){
     const fullName = this.#firstName + ' ' + this.#lastName;
     return fullName;

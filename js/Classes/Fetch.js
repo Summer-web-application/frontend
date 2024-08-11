@@ -5,6 +5,7 @@ import { BACKEND_URL } from "../config.js";
 class Fetch {
 
     //#region Posts
+    // method for getting all posts
     async getAllPosts() {
         try {
             const response = await fetch(BACKEND_URL + '/blog');
@@ -14,13 +15,14 @@ class Fetch {
                 alert(errorResponse.error);
                 return;
             }
-            const data = await response.json();
-            return this.#mapPosts(data);
+            const data = await response.json(); // parse response data
+            return this.#mapPosts(data); // map the data and return it
         } catch (error){
             console.error("Fetch error: ", error);
         }
     };
 
+    // method for getting a specific post
     async getOnePost(postId) {
         try {
             const response = await fetch(BACKEND_URL + `/blog/${postId}`);
@@ -36,6 +38,8 @@ class Fetch {
             console.error("Fetch error: ", error);
         }
     }
+
+    // method for getting the users own posts
     async getOwnPosts(user_id) {
         try {
             const response = await fetch(BACKEND_URL + `/blog/user/${user_id}/posts`);
@@ -51,11 +55,13 @@ class Fetch {
             console.error("Fetch error: ", error);
         }
     }
+
+    // method for creating a post
     async createPost(data) {
         try {
             const response = await fetch(BACKEND_URL + '/blog/new', {
                 method: 'POST',
-                credentials: 'include',
+                credentials: 'include', // include credentials in the request
                 body: data
             });
             if (!response.ok) {
@@ -70,6 +76,8 @@ class Fetch {
             console.error(error);
         }
     }
+
+    // method for editing a post
     async editPost(postId, text) {
         const response = await fetch(`http://localhost:3000/blog/${postId}`, {
             method: 'PUT',
@@ -87,6 +95,8 @@ class Fetch {
         }
         return response.ok;
     }
+
+    // method for deleting a post
     async deletePost(postId) {
         try {
             const response = await fetch(`${BACKEND_URL}/blog/${postId}`, {
@@ -109,6 +119,7 @@ class Fetch {
         }
     }
     
+    // map raw post data
     #mapPosts = (postData) => {
         const posts = [];
         postData.forEach(element => {
@@ -118,7 +129,9 @@ class Fetch {
         return posts;
     }
     //#endregion
+
     //#region Comments
+
     async getComments(postId) {
         try {
             const response = await fetch(BACKEND_URL + `/blog/${postId}/comments`)

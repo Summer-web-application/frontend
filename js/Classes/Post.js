@@ -8,6 +8,7 @@ class Post {
     #createdAt = undefined;
     #likes = undefined;
 
+    // set the post data
     constructor(id, firstName, lastName, username, text, image, createdAt, likes){
         this.#id = id;
         this.#firstName = firstName;
@@ -19,6 +20,7 @@ class Post {
         this.#likes = likes;
     }
 
+    // getters
     get id(){
         return this.#id;
     }
