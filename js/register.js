@@ -12,6 +12,7 @@ const registerButton = document.getElementById('registerButton');
 registerButton.addEventListener('click', async (e) => {
     e.preventDefault();
 
+    // get the input values
     const firstName = firstName_input.value;
     const lastName = lastName_input.value;
     const userName = userName_input.value;
@@ -19,11 +20,13 @@ registerButton.addEventListener('click', async (e) => {
     const password = password_input.value;
     const confPassword = confPassword_input.value;
 
+    // check if passwords match
     if(password != confPassword){
         alert('Passwords do not match!');
         return;
     }
     try {
+        // attempt to register the user
         const result = await user.register(firstName,lastName,userName,email,password);
         alert(`Account created successfully for email: ${result.email}`)
         window.location.href = "login.html";

@@ -9,9 +9,12 @@ const addCommentButton = document.getElementById('add-comment-button');
 const addCommentText = document.getElementById('add-comment-text');
 const container = document.querySelector('.comments-section');
 
+// get the post details and assign them to the right element
 async function getAndAssignDetails(post_id) {
     try {
+        // get the postId
         const post = await fetch.getOnePost(post_id);
+        // assign the details to the appropriate elements
         document.querySelector('.profile-header .profile-info h1').innerText = post[0].firstName + ' ' + post[0].lastName;
         document.querySelector('.profile-header .profile-info p').innerText = '@' + post[0].username;
         document.querySelector('.post-content p').innerText = post[0].text;
@@ -24,6 +27,7 @@ async function getAndAssignDetails(post_id) {
         console.log(error)
     }
 }
+// assign the image to the image element
 function assignImage(imageValue, postImage) {
     if (postImage) {
         postImage.src = BACKEND_URL + '/images/' + imageValue;
@@ -31,6 +35,8 @@ function assignImage(imageValue, postImage) {
         postImage.style.maxHeight = '300px';
     }
 }
+
+// get the posts comments
 async function getPostComments() {
     try {
         container.innerHTML = '';
@@ -40,6 +46,8 @@ async function getPostComments() {
         console.log(error);
     }
 }
+
+// post a comment
 async function postComment(post_id) {
     const user_id = user.id;
     const text = addCommentText.value.trim();
@@ -52,8 +60,11 @@ async function postComment(post_id) {
         addCommentText.value = '';
     }
 }
+
+// render the comments under the post
 function renderComment(data) {
     data.forEach(comment => {
+        // create the necessary elements to hold the data
         const commentContainer = document.createElement('div');
         commentContainer.classList.add('comment');
 
@@ -79,6 +90,7 @@ function renderComment(data) {
         date.classList.add('comment-timestamp');
         date.textContent = comment.date;
 
+        // create a like button with Bootstrap
         const likeButton = document.createElement('button');
         likeButton.innerHTML = `<i class="bi bi-heart-fill"></i> ${comment.likes}`;
         likeButton.id = `reaction-button-2`;
@@ -87,6 +99,8 @@ function renderComment(data) {
         likeButton.addEventListener('click', () => {
             likeDislikeComment(comment.id, likeButton.classList);
         });
+
+        // create the edit, save and delete buttons
         const editCommentButton = document.createElement('button');
         editCommentButton.classList.add('edit-comment-btn');
         editCommentButton.innerText = 'Edit';
@@ -116,6 +130,7 @@ function renderComment(data) {
         commentContainer.appendChild(date);
         container.appendChild(commentContainer);
 
+        // if the user is the owner of the comment allow them to edit or delete it
         if (user.username === comment.username) {
             editCommentButton.addEventListener('click', function () {
                 if (editCommentTextarea.style.display === 'none') {
@@ -173,6 +188,8 @@ function renderComment(data) {
         }
     });
 }
+
+// get user likes
 async function getUsersLikes() {
     if(!user.isLoggedIn){
         return;
@@ -182,13 +199,15 @@ async function getUsersLikes() {
         likedComments.forEach(element => {
             const likeButton = document.querySelector(`#reaction-button-2[data="${element.comment_id}"]`);
             if (likeButton) {
-                likeButton.classList.add('liked');
+                likeButton.classList.add('liked'); // mark the comments that are liked
             }
         })
     } catch (error) {
         console.log(error);
     }
 }
+
+// function to like or dislike a commment
 async function likeDislikeComment(commentId, classList) {
     try {
         //pass classlist to check the users comment like state
@@ -212,6 +231,8 @@ async function likeDislikeComment(commentId, classList) {
         console.log(error);
     }
 }
+
+// update comments
 async function updateComment(commentId, updatedCommentText) {
     try {
         const data = {
@@ -224,6 +245,7 @@ async function updateComment(commentId, updatedCommentText) {
         return false;
     }
 }
+
 document.addEventListener("DOMContentLoaded", async function () {
     if (postId != null) {
         try {
@@ -247,15 +269,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 });
 
+// eventlistener for adding a comment
 addCommentButton.addEventListener('click', async () => {
     postComment(postId);
 });
 
+// update post content
 async function updatePost() {
     const editButton = document.querySelector('.edit-post-btn');
 
     const postUsername = document.querySelector(".profile-info p").textContent
 
+    // check if the current user is the owner of the post
     if ("@" + user.username === postUsername) {
         editButton.style.display = 'block';
     } else {
@@ -285,6 +310,7 @@ async function updatePost() {
             }
         });
 
+
         saveButton.addEventListener('click', async function () {
             const updatedContent = editTextarea.value.trim();
             if (updatedContent === '') return;
@@ -306,11 +332,12 @@ async function updatePost() {
             }
         });
 
+        // delet post
         deleteButton.addEventListener('click', async function () { 
             try {
-                const success = await fetch.deletePost(postId); 
+                const success = await fetch.deletePost(postId); // send delete request 
                 if (success) {
-                    window.location.href = 'index.html';
+                    window.location.href = 'index.html'; 
                 } else {
                     console.error('Failed to delete post');
                 }
