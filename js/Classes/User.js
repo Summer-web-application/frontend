@@ -3,6 +3,7 @@ import { BACKEND_URL } from "../config.js";
 class User {
     static instanceCounter = 0;
 
+    // store user data
     #user_id = undefined
     #email = undefined
     #token = undefined
@@ -11,6 +12,7 @@ class User {
     #last_name = undefined
 
     constructor() {
+        // check if data is stored in sessionStorage 
         const userFromStorage = sessionStorage.getItem('user');
         if(userFromStorage) {
             const user = JSON.parse(userFromStorage);
@@ -22,6 +24,7 @@ class User {
             this.#token = user.token;
         }
     }
+
     //getters
     get id(){
         return this.#user_id;
@@ -46,30 +49,30 @@ class User {
         return false;
     }
 
-    //methods
+    //method to handle user login
     async login(email, password) {
         const data = JSON.stringify({email: email, password:password});
         try {
             const response = await fetch(BACKEND_URL + '/user/login', {
                 method: 'POST',
                 headers:{
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json'  // set content type to JSON
                 },
-                body: data,
-                mode: 'cors', 
-                credentials: 'include',
+                body: data, // attach the login data
+                mode: 'cors', // enable CORS
+                credentials: 'include', // include credentials for the session
             });
             if (!response.ok) { 
-                const errorResponse = await response.json();
-                console.error('HTTP Error:', errorResponse.error);
+                const errorResponse = await response.json(); // parse error response
+                console.error('HTTP Error:', errorResponse.error);  // log error in console
                 alert(`Error: ${errorResponse.error}`);
                 return false;
             }
-            const json = await response.json();
-            this.#user_id = json.id;
-            this.#username = json.username;
-            this.#email = json.email;
-            sessionStorage.setItem('user', JSON.stringify(json));
+            const json = await response.json(); // parse successful response
+            this.#user_id = json.id; // set user id
+            this.#username = json.username; // set username 
+            this.#email = json.email; // set email
+            sessionStorage.setItem('user', JSON.stringify(json)); // store current user data in sessionStorage
             return true;
         } catch (error) {
             console.error('Error reg:', error);
@@ -77,6 +80,7 @@ class User {
         }
     }
 
+    // method to handle user registration
     async register(firstName, lastName, userName, email, password) {
         const data = JSON.stringify({first_name: firstName, last_name:lastName, username:userName, email:email, password:password});
         try {
@@ -101,6 +105,7 @@ class User {
         }
     }
 
+    // method to handle loggin out
     async logout() {
         try{
             const response = await fetch(BACKEND_URL + '/user/logout', {
@@ -113,16 +118,18 @@ class User {
                 alert(`Error: ${errorResponse.error}`);
                 return;
             }
+            // clear user data on successful logout
             this.#user_id = undefined;
             this.#username = undefined;
             this.#email = undefined;
             this.#token = undefined;
-            sessionStorage.removeItem('user');
+            sessionStorage.removeItem('user'); // remove user data from sessionStorage
         } catch (error) {
             console.error(error);
         }
     }
 
+    // method to handle ressetting password
     async forgotPassword(email) {
         try {
             const response = await fetch(BACKEND_URL + `/user/forgot-password/${email}`);
@@ -139,4 +146,4 @@ class User {
         }
     }
 }
-export {User}
+export {User} // export the user class
