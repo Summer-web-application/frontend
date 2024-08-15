@@ -1,25 +1,56 @@
 import { Fetch } from "./Classes/Fetch.js";
 import { User } from "./Classes/User.js";
 import { BACKEND_URL } from "./config.js";
-const urlParams = new URLSearchParams(window.location.search);
-const postId = urlParams.get('postId');
 const fetch = new Fetch();
 const user = new User();
 const addCommentButton = document.getElementById('add-comment-button');
 const addCommentText = document.getElementById('add-comment-text');
 const container = document.querySelector('.comments-section');
 
+async function initializePost(postId) {
+    if (postId != null) {
+        try {
+            await getAndAssignDetails(postId);
+            await getPostComments(postId);
+            await getUsersLikes(postId);
+            await updatePost(postId);
+        } catch (error) {
+            console.error('Error loading post details or comments:', error);
+        }
+    } else {
+        console.log("error not valid postId");
+    }
+    // eventlistener for adding a comment
+    addCommentButton.addEventListener('click', async () => {
+        postComment(postId);
+    });
+    const modalElement = document.getElementById('postModal');
+    //reset values on close
+    modalElement.addEventListener('hidden.bs.modal', function () {
+        document.querySelector('.profile-header .profile-info h1').innerText = '';
+        document.querySelector('.profile-header .profile-info p').innerText = '';
+        document.querySelector('.post-content p').innerText = '';
+        document.querySelector('.post-image').src = '';
+        document.querySelector('.post-timestamp').innerText = '';
+
+        // remove the postId param from URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete('postId');
+        history.replaceState(null, '', url.toString());
+    });
+}
+
 // get the post details and assign them to the right element
-async function getAndAssignDetails(post_id) {
+async function getAndAssignDetails(postId) {
     try {
         // get the postId
-        const post = await fetch.getOnePost(post_id);
+        const post = await fetch.getOnePost(postId);
         // assign the details to the appropriate elements
         document.querySelector('.profile-header .profile-info h1').innerText = post[0].firstName + ' ' + post[0].lastName;
         document.querySelector('.profile-header .profile-info p').innerText = '@' + post[0].username;
         document.querySelector('.post-content p').innerText = post[0].text;
+        const postImage = document.querySelector('.post-image');
         if(post[0].image !== '') {
-            const postImage = document.querySelector('.post-image');
             assignImage(post[0].image, postImage);
         }
         document.querySelector('.post-timestamp').innerText = post[0].createdAt;
@@ -37,11 +68,11 @@ function assignImage(imageValue, postImage) {
 }
 
 // get the posts comments
-async function getPostComments() {
+async function getPostComments(postId) {
     try {
         container.innerHTML = '';
         const comments = await fetch.getComments(postId);
-        renderComment(comments);
+        renderComment(comments, postId);
     } catch (error) {
         console.log(error);
     }
@@ -54,7 +85,7 @@ async function postComment(post_id) {
     const data = { text, post_id, user_id };
     const comment = await fetch.postComment(data);
     if (comment != undefined) {
-        renderComment(comment);
+        renderComment(comment, post_id);
         addCommentText.value = '';
     } else {
         addCommentText.value = '';
@@ -62,7 +93,7 @@ async function postComment(post_id) {
 }
 
 // render the comments under the post
-function renderComment(data) {
+function renderComment(data, postId) {
     data.forEach(comment => {
         // create the necessary elements to hold the data
         const commentContainer = document.createElement('div');
@@ -73,9 +104,6 @@ function renderComment(data) {
 
         const commentBody = document.createElement('div');
         commentBody.classList.add('comment-body');
-
-        const profilePicture = document.createElement('img');
-        profilePicture.src = "https://divedigital.id/wp-content/uploads/2022/07/2-Blank-PFP-Icon-Instagram.jpg";
 
         const commentName = document.createElement('p');
         commentName.textContent = comment.name;
@@ -97,7 +125,7 @@ function renderComment(data) {
         likeButton.classList.add('reaction-button', 'me-2');
         likeButton.setAttribute('data', comment.id)
         likeButton.addEventListener('click', () => {
-            likeDislikeComment(comment.id, likeButton.classList);
+            likeDislikeComment(comment.id, likeButton.classList, postId);
         });
 
         // create the edit, save and delete buttons
@@ -119,7 +147,6 @@ function renderComment(data) {
         editCommentTextarea.classList.add('edit-comment-textarea');
         editCommentTextarea.style.display = 'none';
 
-        //commentProfile.appendChild(profilePicture);
         commentProfile.appendChild(commentName);
         commentProfile.appendChild(commentUsername);
         commentContainer.appendChild(commentProfile);
@@ -154,7 +181,7 @@ function renderComment(data) {
                 if (updatedComment === '') return;
 
                 try {
-                    const success = await updateComment(comment.id, updatedComment);
+                    const success = await updateComment(comment.id, postId, updatedComment);
                     if (success) {
                         commentText.innerText = updatedComment;
                         commentText.style.display = 'block';
@@ -190,7 +217,7 @@ function renderComment(data) {
 }
 
 // get user likes
-async function getUsersLikes() {
+async function getUsersLikes(postId) {
     if(!user.isLoggedIn){
         return;
     }
@@ -208,7 +235,7 @@ async function getUsersLikes() {
 }
 
 // function to like or dislike a commment
-async function likeDislikeComment(commentId, classList) {
+async function likeDislikeComment(commentId, classList, postId) {
     try {
         //pass classlist to check the users comment like state
         const updateLikes = await fetch.likeDislikeComment(commentId, postId, classList, user.id);
@@ -233,7 +260,7 @@ async function likeDislikeComment(commentId, classList) {
 }
 
 // update comments
-async function updateComment(commentId, updatedCommentText) {
+async function updateComment(commentId, postId, updatedCommentText) {
     try {
         const data = {
             text: updatedCommentText
@@ -246,36 +273,8 @@ async function updateComment(commentId, updatedCommentText) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", async function () {
-    if (postId != null) {
-        try {
-            await getAndAssignDetails(postId);
-            await getPostComments(postId);
-            await getUsersLikes();
-            await updatePost();
-        } catch (error) {
-            console.error('Error loading post details or comments:', error);
-        }
-    } else {
-        console.log("error not valid postId");
-    }
-    // reset URL when modal is hidden
-    const modalElement = document.getElementById('postModal');
-    modalElement.addEventListener('hidden.bs.modal', function () {
-        // remove the postId param from URL
-        const url = new URL(window.location.href);
-        url.searchParams.delete('postId');
-        history.replaceState(null, '', url.toString());
-    });
-});
-
-// eventlistener for adding a comment
-addCommentButton.addEventListener('click', async () => {
-    postComment(postId);
-});
-
 // update post content
-async function updatePost() {
+async function updatePost(postId) {
     const editButton = document.querySelector('.edit-post-btn');
 
     const postUsername = document.querySelector(".profile-info p").textContent
@@ -348,3 +347,4 @@ async function updatePost() {
 
     }
 }
+export { initializePost }

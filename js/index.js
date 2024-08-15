@@ -2,6 +2,7 @@
 import { User } from "./Classes/User.js";
 import { Fetch } from "./Classes/Fetch.js";
 import { handleImageSelection, getInputFile, clearImage, displayPostImage } from './imageHandler.js';
+import { initializePost } from "./post.js";
 const fetch = new Fetch();
 const user = new User();
 const list = document.getElementById('blog-posts'); // get the an element with its id
@@ -10,7 +11,16 @@ const charCount = document.getElementById('char-count');
 const postModal = new bootstrap.Modal(document.getElementById('postModal'));
 const maxChars = 250;
 
-
+// function to get all posts
+async function getPosts () {
+    try {
+        list.innerHTML = ''; // Clear existing posts
+        const data = await fetch.getAllPosts(); // fetch posts from the server
+        renderPost(data);   // render the posts
+    } catch (error) {
+        console.error(error);
+    }
+}
 // update the character count display
 const updateCharCount = () => {
     const remaining = maxChars - input.value.length;
@@ -79,16 +89,7 @@ async function likeDislikePost(post_id, classList) {
     }
 }
 
-// function to get all posts
-async function getPosts () {
-    try {
-        list.innerHTML = ''; // Clear existing posts
-        const data = await fetch.getAllPosts(); // fetch posts from the server
-        renderPost(data);   // render the posts
-    } catch (error) {
-        console.error(error);
-    }
-}
+
 
 // this is to show the posts on the webpage
 function renderPost(data) {
@@ -139,11 +140,11 @@ function renderPost(data) {
         commentButton.innerHTML = `<i class="bi bi-chat-right-text-fill"></i> Comment`; // use bootstrap icons for the button
         commentButton.id = `reaction-button-1`; //assign post id to buttons class
         commentButton.classList.add('reaction-button', 'me-2'); // bootstrap utility classes for styling
-        commentButton.addEventListener('click', (e) => {
+        commentButton.addEventListener('click', async (e) => {
             e.preventDefault();
             let postId = post.id
             window.history.pushState({ postId }, '', `?postId=${postId}`); // update the URL with the posts id
-            location.reload() // reload the page so that the modal window is updated wiht the appropriate data
+            await initializePost(postId);
             postModal.show() // show the modal window
         });
         buttonContainer.appendChild(commentButton);
@@ -166,17 +167,17 @@ function renderPost(data) {
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
-    if (list) {
+    const urlParams = new URLSearchParams(window.location.search); // get the current URL
+    const postId = urlParams.get('postId'); // get the "postId" parameter
+    if (postId) { // update modal details if modal open
+        await initializePost(postId);
+        postModal.show() // if there is a id in the URL open the appropriate posts
+    } 
+    if (list) { // update posts
         await getPosts();
         getUsersLikes();
     }
     updateCharCount();
-    
-    const urlParams = new URLSearchParams(window.location.search); // get the current URL
-    const postId = urlParams.get('postId'); // get the "postId" parameter
-    if (postId) {
-        postModal.show() // if there is a id in the URL open the appropriate posts
-    }
 });
 
 // eventlistener to update the character count on the posts textarea

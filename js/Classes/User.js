@@ -1,9 +1,6 @@
 import { BACKEND_URL } from "../config.js";
 
 class User {
-    static instanceCounter = 0;
-
-    // store user data
     #user_id = undefined
     #email = undefined
     #token = undefined
