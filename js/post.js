@@ -13,17 +13,15 @@ async function initializePost(postId) {
             await getAndAssignDetails(postId);
             await getPostComments(postId);
             await getUsersLikes(postId);
-            await updatePost(postId);
+            updatePost();
         } catch (error) {
-            console.error('Error loading post details or comments:', error);
+            console.error(error);
         }
     } else {
-        console.log("error not valid postId");
+        return;
     }
     // eventlistener for adding a comment
-    addCommentButton.addEventListener('click', async () => {
-        postComment(postId);
-    });
+    addCommentButton.addEventListener('click', handleAddComment);
     const modalElement = document.getElementById('postModal');
     //reset values on close
     modalElement.addEventListener('hidden.bs.modal', function () {
@@ -32,12 +30,18 @@ async function initializePost(postId) {
         document.querySelector('.post-content p').innerText = '';
         document.querySelector('.post-image').src = '';
         document.querySelector('.post-timestamp').innerText = '';
-
+        //remove event listener so it doesnt dublicate
+        addCommentButton.removeEventListener('click', handleAddComment); 
         // remove the postId param from URL
         const url = new URL(window.location.href);
         url.searchParams.delete('postId');
         history.replaceState(null, '', url.toString());
     });
+}
+function handleAddComment() {
+    const urlParams = new URLSearchParams(window.location.search); // get the current URL
+    const postId = urlParams.get('postId'); // get the "postId" parameter
+    postComment(postId);
 }
 
 // get the post details and assign them to the right element
@@ -272,79 +276,99 @@ async function updateComment(commentId, postId, updatedCommentText) {
         return false;
     }
 }
-
-// update post content
-async function updatePost(postId) {
+function handleEditButtonClick() {
     const editButton = document.querySelector('.edit-post-btn');
+    const saveButton = document.querySelector('.save-edit-btn');
+    const deleteButton = document.querySelector('.delete-post-btn');
+    const postContentP = document.querySelector('.post-content p');
+    const editTextarea = document.querySelector('.edit-textarea');
 
-    const postUsername = document.querySelector(".profile-info p").textContent
+    if (editTextarea.style.display === 'none') {
+        editTextarea.value = postContentP.innerText;
+        postContentP.style.display = 'none';
+        editTextarea.style.display = 'block';
+        saveButton.style.display = 'block';
+        deleteButton.style.display = 'block'; 
+        editButton.innerText = 'Cancel';
+    } else {
+        postContentP.style.display = 'block';
+        editTextarea.style.display = 'none';
+        saveButton.style.display = 'none';
+        deleteButton.style.display = 'none';
+        editButton.innerText = 'Edit';
+    }
+}
 
-    // check if the current user is the owner of the post
+async function handleSaveButtonClick() {
+    const urlParams = new URLSearchParams(window.location.search); // get the current URL
+    const postId = urlParams.get('postId'); // get the "postId" parameter
+
+    const editTextarea = document.querySelector('.edit-textarea');
+    const postContentP = document.querySelector('.post-content p');
+    const saveButton = document.querySelector('.save-edit-btn');
+    const deleteButton = document.querySelector('.delete-post-btn');
+
+    const updatedContent = editTextarea.value.trim();
+    if (updatedContent === '') return;
+
+    try {
+        const success = await fetch.editPost(postId, updatedContent);
+        if (success) {
+            postContentP.innerText = updatedContent;
+            postContentP.style.display = 'block';
+            editTextarea.style.display = 'none';
+            saveButton.style.display = 'none';
+            deleteButton.style.display = 'none';
+            document.querySelector('.edit-post-btn').innerText = 'Edit';
+        } else {
+            console.error('Failed to update post');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function handleDeleteButtonClick() {
+    const urlParams = new URLSearchParams(window.location.search); // get the current URL
+    const postId = urlParams.get('postId'); // get the "postId" parameter
+
+    try {
+        const success = await fetch.deletePost(postId);
+        if (success) {
+            window.location.href = 'index.html'; 
+        } else {
+            console.error('Failed to delete post');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function updatePost() {
+    const editButton = document.querySelector('.edit-post-btn');
+    const saveButton = document.querySelector('.save-edit-btn');
+    const deleteButton = document.querySelector('.delete-post-btn');
+    const postUsername = document.querySelector(".profile-info p").textContent;
+
+    // Check if the current user is the owner of the post
     if ("@" + user.username === postUsername) {
         editButton.style.display = 'block';
     } else {
         editButton.style.display = 'none';
     }
 
+    //seperate event listeners so they can be removed and wont stack
+    // Remove old event listeners
+    editButton.removeEventListener('click', handleEditButtonClick);
+    saveButton.removeEventListener('click', handleSaveButtonClick);
+    deleteButton.removeEventListener('click', handleDeleteButtonClick);
+
+    // Add new event listeners
     if (editButton.style.display !== 'none') {
-        const saveButton = document.querySelector('.save-edit-btn');
-        const deleteButton = document.querySelector('.delete-post-btn');
-        const postContentP = document.querySelector('.post-content p');
-        const editTextarea = document.querySelector('.edit-textarea');
-
-        editButton.addEventListener('click', function () {
-            if (editTextarea.style.display === 'none') {
-                editTextarea.value = postContentP.innerText;
-                postContentP.style.display = 'none';
-                editTextarea.style.display = 'block';
-                saveButton.style.display = 'block';
-                deleteButton.style.display = 'block'; 
-                editButton.innerText = 'Cancel';
-            } else {
-                postContentP.style.display = 'block';
-                editTextarea.style.display = 'none';
-                saveButton.style.display = 'none';
-                deleteButton.style.display = 'none';
-                editButton.innerText = 'Edit';
-            }
-        });
-
-
-        saveButton.addEventListener('click', async function () {
-            const updatedContent = editTextarea.value.trim();
-            if (updatedContent === '') return;
-
-            try {
-                const success = await fetch.editPost(postId, updatedContent);
-                if (success) {
-                    postContentP.innerText = updatedContent;
-                    postContentP.style.display = 'block';
-                    editTextarea.style.display = 'none';
-                    saveButton.style.display = 'none';
-                    deleteButton.style.display = 'none';
-                    editButton.innerText = 'Edit';
-                } else {
-                    console.error('Failed to update post');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        });
-
-        // delet post
-        deleteButton.addEventListener('click', async function () { 
-            try {
-                const success = await fetch.deletePost(postId); // send delete request 
-                if (success) {
-                    window.location.href = 'index.html'; 
-                } else {
-                    console.error('Failed to delete post');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        });
-
+        editButton.addEventListener('click', handleEditButtonClick);
+        saveButton.addEventListener('click', handleSaveButtonClick);
+        deleteButton.addEventListener('click', handleDeleteButtonClick);
     }
 }
+
 export { initializePost }

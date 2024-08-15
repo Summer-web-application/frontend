@@ -172,7 +172,7 @@ class Fetch {
     }
     async editComment(commentId, postId, updatedData) {
         try {
-            const response = await fetch(`${BACKEND_URL}/blog/comment/${commentId}`, {
+            const response = await fetch(`${BACKEND_URL}/blog/comment/udpate/${commentId}`, {
                 method: 'PUT',
                 credentials: 'include',
                 headers: {
